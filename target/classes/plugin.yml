@@ -1,0 +1,8 @@
+name: ${name}
+version: ${version}
+author: ${author}
+description: ${desc}
+main: com.knockturnmc.TheHousePoints.HousePoints
+commands:
+  points:
+    description: add/remove points

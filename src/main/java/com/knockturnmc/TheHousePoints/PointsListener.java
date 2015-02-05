@@ -1,6 +1,11 @@
 package com.knockturnmc.TheHousePoints;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -8,6 +13,7 @@ import net.md_5.bungee.api.ChatColor;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -77,6 +83,75 @@ public class PointsListener implements Listener {
 			sign.update();
 			event.setCancelled(true);
 		}
+		
+		Block block = loc.getBlock();
+		org.bukkit.material.Sign s = (org.bukkit.material.Sign) block.getState();
+		Block connected = block.getRelative(s.getAttachedFace());
+		
+		Material material = house.material();
+		int position = getHousePosition(house);
+		
+		switch(position){
+		
+		case 0:
+			for(int i = 1; i < 5; i++){
+			setBlock(connected, material, i);
+			}
+			break;
+		case 1:
+			for(int i = 1; i < 4; i++){
+			setBlock(connected, material, i);
+			}
+			break;
+		case 2:
+			for(int i = 1; i < 3; i++){
+			setBlock(connected, material, i);
+			}
+			break;
+		case 3:
+			for(int i = 1; i < 2; i++){
+			setBlock(connected, material, i);
+			}
+			break;
+		}
+		
+		
+	}
+
+	public void setBlock(Block connected, Material material, int i) {
+		Location location = connected.getLocation();
+		location.setY(connected.getLocation().getY() + i);
+		location.getBlock().setType(material);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public int getHousePosition(House house){
+		HashMap<House, Integer> points = housepoints.getPoints();
+		
+		List<Map.Entry<House, Integer>> entries = new ArrayList<>(
+				points.entrySet());
+		Collections.sort(entries, new Comparator<Entry>() {
+			public int compare(Entry a, Entry b) {
+				Integer A = (Integer) a.getValue();
+				Integer B = (Integer) b.getValue();
+				if (A > B) {
+					return -1;
+				} else if (A == B) {
+					return 0;
+				} else {
+					return 1;
+				}
+			}
+		});
+		
+		int position = 0;
+		for(int i = 0; i < entries.size(); i++){
+			if(entries.get(i).getKey() == house){
+				position = i;
+			}
+		}
+		
+		return position;
 	}
 
 }

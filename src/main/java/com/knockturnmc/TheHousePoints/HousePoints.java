@@ -30,6 +30,9 @@ public class HousePoints extends JavaPlugin{
 	
 	public void onEnable(){
 		this.config = this.getConfig();
+		if(this.getConfig() == null){
+		    this.saveDefaultConfig();
+		}
 		points.put(House.GRYFFINDOR, config.getInt(House.GRYFFINDOR.getName()));
 		points.put(House.RAVENCLAW, config.getInt(House.RAVENCLAW.getName()));
 		points.put(House.HUFFLEPUFF, config.getInt(House.HUFFLEPUFF.getName()));
@@ -43,6 +46,8 @@ public class HousePoints extends JavaPlugin{
 					locations.getDouble(path + ".y"),
 					locations.getDouble(path + ".z")));
 		}
+		
+		getLogger().info("House Points enabled");
 	}
 	
 	public void onDisable(){
@@ -56,13 +61,110 @@ public class HousePoints extends JavaPlugin{
 			config.set("Locations." + e.getKey().toString() + ".y", e.getValue().getY());
 			config.set("Locations." + e.getKey().toString() + ".z", e.getValue().getZ());
 		}
+		
+		getLogger().info("House Points disabled");
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
+		if(!cmd.getName().equalsIgnoreCase("points")){
+			return false;
+		}
+		
+		if(args.length < 3){
+			sender.sendMessage(ChatColor.RED + "You didn't put in enough arguments for this command.");
+			return false;
+		}
+		
+		String name;
+		if(sender instanceof Player){
+			name = ((Player) sender).getDisplayName();
+		}
+		else{
+			name = "The Gods Above";
+		}
+		
+		House house = null;
+		if(args[1].length() == 1){
+			for(House h : House.values()){
+				if(args[1].toUpperCase().equals(h.getName().charAt(0))){
+					house = h;
+				}
+			}
+		}
+		else {
+			try{
+				house = House.valueOf(args[1]);
+			}
+			catch(Exception e){
+				sender.sendMessage(ChatColor.RED + "That doesn't appear to be a house.");
+				return false;
+			}
+		}
+		
+		int pointChange = 0;
+		try{ pointChange = Integer.parseInt(args[2]);}
+		catch(Exception e){
+			sender.sendMessage(ChatColor.RED + "That doesn't appear to be a number.");
+			return false;
+		}
+		
+		boolean isPositive = true;
+		
+		if(args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("+") || args[0].equalsIgnoreCase("add")){
+			points.put(house, points.get(house) + pointChange);
+			new PointsEvent(house, points.get(house), true);
+			isPositive = true;
+		}
+		else if(args[0].equalsIgnoreCase("take") || args[0].equalsIgnoreCase("-") || args[0].equalsIgnoreCase("subtract")){
+			points.put(house, points.get(house) - pointChange);
+			new PointsEvent(house, points.get(house), false);
+			isPositive = false;
+		}
+		
+		if(args.length == 3){
+			getMessage(isPositive, house, name, points.get(house));
+		}
+		else{
+			String playername = null;
+			try{
+				Player player = Bukkit.getPlayer(args[3]);
+				playername = player.getPlayer().getDisplayName();
+			}
+			catch(Exception e){
+				this.getLogger().info("House points attempted to find a player, but " + args[3] + " is not considered a player.");
+			}
+			
+			if(args.length == 4 && playername != null){
+				getMessage(isPositive, true, false, house, name, points.get(house), playername, null);
+			}
+			else if(args.length == 4 && playername == null){
+				getMessage(isPositive, false, true, house, name, points.get(house), null, args[3]);
+			}
+			else if(args.length > 4 && playername != null){
+				String reason = "";
+				for (int i = 4; i < args.length; i++) {
+					reason += args[i] + " ";
+				}
+				getMessage(isPositive, true, true, house, name, points.get(house), playername, reason);
+			}
+			else{
+				String reason = "";
+				for (int i = 3; i < args.length; i++) {
+					reason += args[i] + " ";
+				}
+				getMessage(isPositive, false, true, house, name, points.get(house), null, reason);
+			}
+		}
+		
+		
 		return true;}
 	
-	public String getMessage(boolean isPositive, boolean hasPlayer, boolean hasReason, String playername, 
-			String reason, House house, Player giver, int amount){
+	private String getMessage(boolean isPositive, House house, String giver, int amount){
+		return getMessage(isPositive, false, false, house, giver, amount, null, null);
+	}
+
+	private String getMessage(boolean isPositive, boolean hasPlayer, boolean hasReason, House house, 
+			String giver, int amount, String playername, String reason){
 		
 		ChatColor positive = isPositive? ChatColor.GREEN : ChatColor.RED;
 		ChatColor messageColor = ChatColor.valueOf(config.getString("MessageColor").toUpperCase().replace(" ", "_"));
@@ -99,7 +201,7 @@ public class HousePoints extends JavaPlugin{
 		}
 		
 		
-		String middle = messageColor + giver.getDisplayName() + " has" + result + amount + 
+		String middle = messageColor + giver + " has" + result + amount + 
 				conjunction + house.color() +  house.getName();
 	
 		return beginning + middle + end;
