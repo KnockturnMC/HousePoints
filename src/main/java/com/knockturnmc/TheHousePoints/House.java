@@ -5,7 +5,7 @@ import org.bukkit.Material;
 
 public enum House {
 	
-	SLYTHERIN("Slytherin", ChatColor.DARK_GREEN, Material.EMERALD), 
+	SLYTHERIN("Slytherin", ChatColor.DARK_GREEN, Material.EMERALD_BLOCK), 
 	GRYFFINDOR("Gryffindor", ChatColor.DARK_RED, Material.REDSTONE_BLOCK), 
 	HUFFLEPUFF("Hufflepuff", ChatColor.GOLD, Material.GOLD_BLOCK), 
 	RAVENCLAW("Ravenclaw", ChatColor.DARK_BLUE, Material.LAPIS_BLOCK);

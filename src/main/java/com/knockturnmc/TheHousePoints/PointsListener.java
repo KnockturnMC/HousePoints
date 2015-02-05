@@ -16,6 +16,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 
@@ -25,8 +27,10 @@ public class PointsListener implements Listener {
 	
 	PointsListener(HousePoints housepoints){
 		this.housepoints = housepoints;
+		housepoints.getServer().getPluginManager().registerEvents(this, housepoints);
 	}
 	
+	@EventHandler (priority = EventPriority.NORMAL)
 	public void onSignChangeEvent(SignChangeEvent event){
 		Player player = event.getPlayer();
 		
@@ -41,6 +45,7 @@ public class PointsListener implements Listener {
 		}		
 	}
 	
+	@EventHandler (priority = EventPriority.NORMAL)
 	public void onPointsEvent(PointsEvent event){
 		HashMap<UUID, Location> signs = housepoints.getSigns();
 		for(Entry<UUID, Location> e : signs.entrySet()){
@@ -59,7 +64,7 @@ public class PointsListener implements Listener {
 		
 		Location loc = event.getBlock().getLocation();
 		HashMap<UUID, Location> signs = housepoints.getSigns();
-		House house = House.valueOf(houseName);
+		House house = House.valueOf(houseName.toUpperCase());
 		sign.setLine(0, house.color() + house.getName());
 		sign.setLine(2, String.valueOf(housepoints.getPoints().get(house)));
 		sign.update();
@@ -74,47 +79,46 @@ public class PointsListener implements Listener {
 			return;
 		}
 		
-		Sign sign = (Sign) loc.getBlock();
+		Sign sign = (Sign) loc.getBlock().getState();
 		House house = event.getHouse();
 		
 		if(ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(house.getName())){
 			sign.setLine(0, house.color() + house.getName());
 			sign.setLine(2, String.valueOf(housepoints.getPoints().get(house)));
 			sign.update();
+		
+			Block block = loc.getBlock();
+			org.bukkit.material.Sign s = (org.bukkit.material.Sign) block.getState().getData();
+			Block connected = block.getRelative(s.getAttachedFace());
+			
+			Material material = house.material();
+			int position = getHousePosition(house);
+		
+			switch(position){
+		
+			case 0:
+				for(int i = 1; i < 5; i++){
+				setBlock(connected, material, i);
+				}
+				break;
+			case 1:
+				for(int i = 1; i < 4; i++){
+				setBlock(connected, material, i);
+				}
+				break;
+			case 2:
+				for(int i = 1; i < 3; i++){
+				setBlock(connected, material, i);
+				}
+				break;
+			case 3:
+				for(int i = 1; i < 2; i++){
+				setBlock(connected, material, i);
+				}
+				break;
+			}
 			event.setCancelled(true);
 		}
-		
-		Block block = loc.getBlock();
-		org.bukkit.material.Sign s = (org.bukkit.material.Sign) block.getState();
-		Block connected = block.getRelative(s.getAttachedFace());
-		
-		Material material = house.material();
-		int position = getHousePosition(house);
-		
-		switch(position){
-		
-		case 0:
-			for(int i = 1; i < 5; i++){
-			setBlock(connected, material, i);
-			}
-			break;
-		case 1:
-			for(int i = 1; i < 4; i++){
-			setBlock(connected, material, i);
-			}
-			break;
-		case 2:
-			for(int i = 1; i < 3; i++){
-			setBlock(connected, material, i);
-			}
-			break;
-		case 3:
-			for(int i = 1; i < 2; i++){
-			setBlock(connected, material, i);
-			}
-			break;
-		}
-		
 		
 	}
 
@@ -127,8 +131,8 @@ public class PointsListener implements Listener {
 	@SuppressWarnings("rawtypes")
 	public int getHousePosition(House house){
 		HashMap<House, Integer> points = housepoints.getPoints();
-		
-		List<Map.Entry<House, Integer>> entries = new ArrayList<>(
+		 
+		List<Map.Entry<House, Integer>> entries = new ArrayList<Map.Entry<House, Integer>>(
 				points.entrySet());
 		Collections.sort(entries, new Comparator<Entry>() {
 			public int compare(Entry a, Entry b) {
