@@ -86,39 +86,44 @@ public class PointsListener implements Listener {
 			sign.setLine(0, house.color() + house.getName());
 			sign.setLine(2, String.valueOf(housepoints.getPoints().get(house)));
 			sign.update();
-		
-			Block block = loc.getBlock();
-			org.bukkit.material.Sign s = (org.bukkit.material.Sign) block.getState().getData();
-			Block connected = block.getRelative(s.getAttachedFace());
-			
-			Material material = house.material();
-			int position = getHousePosition(house);
-		
-			switch(position){
-		
-			case 0:
-				for(int i = 1; i < 5; i++){
-				setBlock(connected, material, i);
-				}
-				break;
-			case 1:
-				for(int i = 1; i < 4; i++){
-				setBlock(connected, material, i);
-				}
-				break;
-			case 2:
-				for(int i = 1; i < 3; i++){
-				setBlock(connected, material, i);
-				}
-				break;
-			case 3:
-				for(int i = 1; i < 2; i++){
-				setBlock(connected, material, i);
-				}
-				break;
-			}
-			event.setCancelled(true);
 		}
+	for(House h : House.values()){
+		if(ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(h.getName())){
+		Block block = loc.getBlock();
+		org.bukkit.material.Sign s = (org.bukkit.material.Sign) block.getState().getData();
+		Block connected = block.getRelative(s.getAttachedFace());
+		
+		int position = getHousePosition(h);
+		for(int i = 1; i < 5; i++){
+		setBlock(connected, Material.GLASS, i);
+		}
+	
+		switch(position){
+	
+		case 0:
+			for(int i = 1; i < 5; i++){
+			setBlock(connected, h.material(), i);
+			}
+			break;
+		case 1:
+			for(int i = 1; i < 4; i++){
+			setBlock(connected, h.material(), i);
+			}
+			break;
+		case 2:
+			for(int i = 1; i < 3; i++){
+			setBlock(connected, h.material(), i);
+			}
+			break;
+		case 3:
+			for(int i = 1; i < 2; i++){
+			setBlock(connected, h.material(), i);
+			}
+			break;
+		}
+		}
+	}
+	event.setCancelled(true);
 		
 	}
 

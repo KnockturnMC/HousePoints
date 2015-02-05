@@ -31,7 +31,6 @@ public class HousePoints extends JavaPlugin{
 	
 	public void onEnable(){
 		this.config = this.getConfig();
-		this.getLogger().info(config.getInt(House.GRYFFINDOR.getName()) + "");
 		points.put(House.GRYFFINDOR, config.getInt(House.GRYFFINDOR.getName()));
 		points.put(House.RAVENCLAW, config.getInt(House.RAVENCLAW.getName()));
 		points.put(House.HUFFLEPUFF, config.getInt(House.HUFFLEPUFF.getName()));
