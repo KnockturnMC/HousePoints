@@ -70,7 +70,7 @@ public class HousePoints extends JavaPlugin{
 			for(House house : House.values()){
 				sender.sendMessage(house.color() + house.getName() + messageColor + ": " + points.get(house));
 			}
-			return false;
+			return true;
 		}
 		if(args.length > 0 && args.length < 3){
 			sender.sendMessage(ChatColor.RED + "You didn't put in enough arguments for this command.");
@@ -112,12 +112,22 @@ public class HousePoints extends JavaPlugin{
 		boolean isPositive = true;
 		
 		if(args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("+") || args[0].equalsIgnoreCase("add")){
+			
+			if(!sender.hasPermission("HousePoints.points.give")){
+				sender.sendMessage(ChatColor.RED + "You don't have permission to perform this command.");
+				return false;
+			}
+			
 			points.put(house, points.get(house) + pointChange);
 			Event event = new PointsEvent(house);
 			Bukkit.getPluginManager().callEvent(event);
 			isPositive = true;
 		}
 		else if(args[0].equalsIgnoreCase("take") || args[0].equalsIgnoreCase("-") || args[0].equalsIgnoreCase("subtract")){
+			if(!sender.hasPermission("HousePoints.points.take")){
+				sender.sendMessage(ChatColor.RED + "You don't have permission to perform this command.");
+				return false;
+			}
 			points.put(house, points.get(house) - pointChange);
 			Event event = new PointsEvent(house);
 			Bukkit.getPluginManager().callEvent(event);
@@ -131,7 +141,7 @@ public class HousePoints extends JavaPlugin{
 			String playername = null;
 			try{
 				Player player = Bukkit.getPlayer(args[3]);
-				playername = player.getPlayer().getDisplayName();
+				playername = player.getDisplayName();
 			}
 			catch(Exception e){
 				this.getLogger().info("House points attempted to find a player, but " + args[3] + " is not considered a player.");
@@ -188,7 +198,7 @@ public class HousePoints extends JavaPlugin{
 			end = positive + " for " + messageColor + playername + positive +  " for " + reason;
 		}
 		else if(hasReason && !hasPlayer){
-			end = positive + " for " + messageColor + positive + reason;
+			end = positive + " for " + reason;
 		}
 		else if(!hasReason && hasPlayer && isPositive){
 			end = positive + " for " + messageColor + playername + positive + "'s triumphs";
