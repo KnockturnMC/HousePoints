@@ -19,14 +19,6 @@ public class HousePoints extends JavaPlugin{
 	
 	FileConfiguration config;
 	private HashMap<House, Integer> points = new HashMap<House, Integer>();
-	public HashMap<House, Integer> getPoints() {
-		return points;
-	}
-
-	public HashMap<UUID, Location> getSigns() {
-		return signs;
-	}
-
 	private HashMap<UUID, Location> signs = new HashMap<UUID, Location>();
 	
 	public void onEnable(){
@@ -121,13 +113,13 @@ public class HousePoints extends JavaPlugin{
 		
 		if(args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("+") || args[0].equalsIgnoreCase("add")){
 			points.put(house, points.get(house) + pointChange);
-			Event event = new PointsEvent(house, points.get(house), true);
+			Event event = new PointsEvent(house);
 			Bukkit.getPluginManager().callEvent(event);
 			isPositive = true;
 		}
 		else if(args[0].equalsIgnoreCase("take") || args[0].equalsIgnoreCase("-") || args[0].equalsIgnoreCase("subtract")){
 			points.put(house, points.get(house) - pointChange);
-			Event event = new PointsEvent(house, points.get(house), false);
+			Event event = new PointsEvent(house);
 			Bukkit.getPluginManager().callEvent(event);
 			isPositive = false;
 		}
@@ -216,6 +208,14 @@ public class HousePoints extends JavaPlugin{
 				conjunction + house.color() +  house.getName();
 	
 		return beginning + middle + end;
+	}
+	
+	public HashMap<House, Integer> getPoints() {
+		return points;
+	}
+
+	public HashMap<UUID, Location> getSigns() {
+		return signs;
 	}
 	
 	

@@ -8,25 +8,13 @@ public class PointsEvent extends Event implements Cancellable{
 	
 	private static HandlerList handlers = new HandlerList();
 	private House house;
-	private int points;
-	private boolean isPositive;
 	
-	public PointsEvent(House house, int points, boolean isPositive){
+	public PointsEvent(House house){
 		this.house = house;
-		this.points = points;
-		this.isPositive = isPositive;
 	}
 	
 	public House getHouse(){
 		return house;
-	}
-	
-	public int getPoints(){
-		return points;
-	}
-	
-	public boolean getPositive(){
-		return isPositive;
 	}
 
 	public boolean isCancelled() {
