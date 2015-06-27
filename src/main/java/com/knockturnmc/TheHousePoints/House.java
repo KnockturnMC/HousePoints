@@ -1,20 +1,20 @@
 package com.knockturnmc.TheHousePoints;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.DyeColor;
 
 public enum House {
 	
-	SLYTHERIN("Slytherin", ChatColor.DARK_GREEN, Material.EMERALD_BLOCK), 
-	GRYFFINDOR("Gryffindor", ChatColor.DARK_RED, Material.REDSTONE_BLOCK), 
-	HUFFLEPUFF("Hufflepuff", ChatColor.GOLD, Material.GOLD_BLOCK), 
-	RAVENCLAW("Ravenclaw", ChatColor.DARK_BLUE, Material.LAPIS_BLOCK);
+	SLYTHERIN("Slytherin", ChatColor.DARK_GREEN, DyeColor.GREEN), 
+	GRYFFINDOR("Gryffindor", ChatColor.DARK_RED, DyeColor.RED), 
+	HUFFLEPUFF("Hufflepuff", ChatColor.GOLD, DyeColor.YELLOW), 
+	RAVENCLAW("Ravenclaw", ChatColor.DARK_BLUE, DyeColor.BLUE);
 	
 	private String name;
 	private ChatColor color;
-	private Material material;
+	private DyeColor material;
 	
-	House(String name, ChatColor color, Material material){
+	House(String name, ChatColor color, DyeColor material){
 		this.name = name;
 		this.color = color;
 		this.material = material;
@@ -28,7 +28,7 @@ public enum House {
 		return color;
 	}
 	
-	public Material material(){
+	public DyeColor material(){
 		return material;
 	}
 }

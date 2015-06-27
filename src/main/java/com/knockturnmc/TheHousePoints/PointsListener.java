@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import net.md_5.bungee.api.ChatColor;
-
+import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -131,6 +131,13 @@ public class PointsListener implements Listener {
 		Location location = connected.getLocation();
 		location.setY(connected.getLocation().getY() + i);
 		location.getBlock().setType(material);
+	}
+	
+	public void setBlock(Block connected, DyeColor material, int i) {
+		Location location = connected.getLocation();
+		location.setY(connected.getLocation().getY() + i);
+		location.getBlock().setType(Material.WOOL);
+		location.getBlock().setData(material.getData());
 	}
 	
 	@SuppressWarnings("rawtypes")
