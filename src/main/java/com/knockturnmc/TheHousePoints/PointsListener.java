@@ -1,14 +1,5 @@
 package com.knockturnmc.TheHousePoints;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
-
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -21,9 +12,18 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+
 public class PointsListener implements Listener {
 	
-	HousePoints housepoints;
+	private HousePoints housepoints;
 	
 	PointsListener(HousePoints housepoints){
 		this.housepoints = housepoints;
@@ -127,21 +127,21 @@ public class PointsListener implements Listener {
 		
 	}
 
-	public void setBlock(Block connected, Material material, int i) {
+	private void setBlock(Block connected, Material material, int i) {
 		Location location = connected.getLocation();
 		location.setY(connected.getLocation().getY() + i);
 		location.getBlock().setType(material);
 	}
 	
-	public void setBlock(Block connected, DyeColor material, int i) {
+	private void setBlock(Block connected, DyeColor material, int i) {
 		Location location = connected.getLocation();
 		location.setY(connected.getLocation().getY() + i);
 		location.getBlock().setType(Material.WOOL);
-		location.getBlock().setData(material.getData());
+		location.getBlock().setData(material.getDyeData());
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public int getHousePosition(House house){
+	private int getHousePosition(House house){
 		HashMap<House, Integer> points = housepoints.getPoints();
 		 
 		List<Map.Entry<House, Integer>> entries = new ArrayList<Map.Entry<House, Integer>>(
