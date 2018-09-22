@@ -111,3 +111,7 @@ Title:
 # also remove from this list, generally though leave this alone.
 Locations:
 ```
+
+
+## Sign
+Placing a wall sign with [<housename>] will create a sign for the house. Behind the sign blocks will move about depending on rank. Requires that you have the number of blocks above the sign block as there are houses.
