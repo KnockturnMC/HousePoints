@@ -260,7 +260,9 @@ public class HousePointsCommand implements CommandExecutor {
         location.setY(connected.getLocation().getY() + i);
         location.getBlock().setType(house.getMaterial());
         if (house.getMaterial() == Material.WOOL) {
-            ((Wool) location.getBlock().getState()).setColor(house.getColor());
+            Wool wool = (Wool) location.getBlock().getState().getData();
+            wool.setColor(house.getColor());
+            location.getBlock().getState().setData(wool);
         }
     }
 
