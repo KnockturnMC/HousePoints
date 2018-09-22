@@ -55,7 +55,6 @@ public class PointsListener implements Listener {
 
         if (sign.getType() == Material.SIGN_POST) {
             event.getPlayer().sendMessage(WALL_SIGN);
-            event.setCancelled(true);
             return;
         }
 
@@ -73,7 +72,6 @@ public class PointsListener implements Listener {
             }
         }
 
-        event.setCancelled(true);
         event.getPlayer().sendMessage(NOT_A_HOUSE);
     }
 

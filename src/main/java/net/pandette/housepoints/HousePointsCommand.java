@@ -175,6 +175,7 @@ public class HousePointsCommand implements CommandExecutor {
         message = ChatColor.translateAlternateColorCodes('&', message);
 
         Bukkit.broadcastMessage(formatMessage(message, event, reason));
+
         for (Location location : HousePoints.getSignLocations()) {
             changeHouseSign(house, location);
         }
@@ -225,21 +226,24 @@ public class HousePointsCommand implements CommandExecutor {
         }
 
         List<House> positions = getHousePositions();
+
         for (House h : HousePoints.getHouses()) {
-            if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(h.getName())) {
-                Block block = loc.getBlock();
-                org.bukkit.material.Sign s = (org.bukkit.material.Sign) block.getState().getData();
-                Block connected = block.getRelative(s.getAttachedFace());
+            if (!ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(h.getName())) continue;
 
-                int position = positions.indexOf(h);
-                for (int i = 1; i < positions.size() + 1; i++) {
-                    setBlock(connected, i);
-                }
+            Block block = loc.getBlock();
+            org.bukkit.material.Sign s = (org.bukkit.material.Sign) block.getState().getData();
+            Block connected = block.getRelative(s.getAttachedFace());
 
-                for (int i = 1; i < positions.size() + 1 - position; i++) {
-                    setBlock(connected, h, i);
-                }
+            int position = positions.indexOf(h);
+            for (int i = 1; i < positions.size() + 1; i++) {
+                setBlock(connected, i);
             }
+
+            for (int i = 1; i < positions.size() + 1 - position; i++) {
+                setBlock(connected, h, i);
+            }
+
+            return;
         }
     }
 
