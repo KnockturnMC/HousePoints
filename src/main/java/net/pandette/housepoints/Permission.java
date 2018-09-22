@@ -24,7 +24,7 @@ import org.bukkit.ChatColor;
  */
 class Permission {
 
-    static final String HOUSE_POINTS = "HousePoints.";
+    private static final String HOUSE_POINTS = "HousePoints.";
     static final String SEE = HOUSE_POINTS + "see";
     static final String GIVE = HOUSE_POINTS + "give";
     static final String TAKE = HOUSE_POINTS + "take";

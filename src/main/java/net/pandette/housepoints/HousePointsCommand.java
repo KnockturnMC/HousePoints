@@ -232,7 +232,7 @@ public class HousePointsCommand implements CommandExecutor {
                 Block connected = block.getRelative(s.getAttachedFace());
 
                 int position = positions.indexOf(h);
-                for (int i = 1; i < HousePoints.getHouses().size(); i++) {
+                for (int i = 1; i < positions.size() + 1; i++) {
                     setBlock(connected, Material.GLASS, i);
                 }
 

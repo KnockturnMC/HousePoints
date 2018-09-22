@@ -34,7 +34,7 @@ import org.bukkit.event.block.SignChangeEvent;
  */
 public class PointsListener implements Listener {
 
-    public PointsListener() {
+    PointsListener() {
         Bukkit.getPluginManager().registerEvents(this, HousePoints.getInstance());
     }
 
