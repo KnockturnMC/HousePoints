@@ -2,7 +2,7 @@ name: HousePoints
 version: 2.0.0
 author: iarepandemonium
 description: A plugin for house points.
-main: HousePoints
+main: net.pandette.housepoints.HousePoints
 commands:
   points:
     description: add/remove points
