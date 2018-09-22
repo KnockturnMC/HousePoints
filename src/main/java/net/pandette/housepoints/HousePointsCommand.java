@@ -196,7 +196,7 @@ public class HousePointsCommand implements CommandExecutor {
         if(pName == null) pName = "";
         return message
                 .replace("%player%", pName)
-                .replace("&points%", String.valueOf(Math.abs(event.getPoints())))
+                .replace("%points%", String.valueOf(Math.abs(event.getPoints())))
                 .replace("%reason%", reason)
                 .replace("%house%", event.getHouse().getName())
                 .replace("%hc%", event.getHouse().getChatColor() + "")
