@@ -1,8 +1,8 @@
 name: HousePoints
-version: 1.2.0
+version: 2.0.0
 author: iarepandemonium
 description: A plugin for house points.
-main: com.knockturnmc.TheHousePoints.HousePoints
+main: HousePoints
 commands:
   points:
     description: add/remove points

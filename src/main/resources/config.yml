@@ -1,9 +1,68 @@
-Gryffindor: 0
-Ravenclaw: 0
-Slytherin: 0
-Hufflepuff: 0
+Houses:
+  Gryffindor:
+    points: 0
+    block:
+      material: WOOL
+      color: RED
+    chatColor: DARK_RED
+    shortcut: g
+  Ravenclaw:
+    points: 0
+    block:
+      material: WOOL
+      color: BLUE
+    chatColor: DARK_BLUE
+    shortcut: r
+  Hufflepuff:
+    points: 0
+    block:
+      material: WOOL
+      color: YELLOW
+    chatColor: GOLD
+    shortcut: h
+  Slytherin:
+    points: 0
+    block:
+      material: WOOL
+      color: GREEN
+    chatColor: DARK_GREEN
+    shortcut: s
 
+# Messages Section
+# %player% = player who receives points
+# %points% = points given/taken
+# %reason% = reason
+# %house% = house
+# %hc% = house color
+# %giver% = person who altered the points
+# if the section doesn't have the reason or player given to then it will show up as blank!
+give:
+  houseOnly: "&e%giver%&r has rewarded %hc%%house%&r with &e%points%&r!"
+  playerNoReason: "&e%giver%&r has rewarded &e%player%&r %hc%%house%&r with &e%points%&r!"
+  playerWithReason: "&e%giver%&r has rewarded &e%player%&r %hc%%house%&r with &e%points%&r for %reason%!"
+  reasonOnly: "&e%giver%&r has rewarded %hc%%house%&r with &e%points%&r for %reason%!"
+take:
+  houseOnly: "&e%giver%&r has taken &e%points%&r from %hc%%house%&r!"
+  playerNoReason: "&e%giver%&r has taken &e%points%&r from &e%player%&r in %hc%%house%&r!"
+  playerWithReason: "&e%giver%&r has taken &e%points%&r from &e%player%&r in %hc%%house%&r for %reason%!"
+  reasonOnly: "&e%giver%&r has taken &e%points%&r from %hc%%house%&r for %reason%!"
+
+# You can change the command here, incase you want to change to another language.
+# WARNING: MUST BE IN LOWER CASE
+positive:
+- add
+- plus
+- "+"
+- give
+negative:
+- take
+- remove
+- subtract
+- "-"
+
+consoleSender: The Gods Above
 MessageColor: light purple
+StandingsTitle: "   [Current House Standings]"
 UseTitle: true
 Title:
   title: [House Points]
