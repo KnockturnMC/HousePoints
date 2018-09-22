@@ -1,3 +1,23 @@
+######################################
+#     House Points Configuration     #
+#        by Kimberly Boynton         #
+######################################
+
+# This section is configuration to setup houses.  They can be any name you would like,
+# but whatever you name them must also appear on the sign for points.
+
+# If you name them something too long to fit on a minecraft sign, then you will not be
+# able to make a points sign.
+
+# The points portion of this updates on load and unload.
+
+# The block can be set to anything in the Material enum, but should be a block, if it is set to wool,
+# setting a DyeColor from the spigot enum will change the color of the wool.
+
+# ChatColor is the color that the house will appear when in chat.  Pick this from ChatColor enum.
+
+# Short cut is a short cut you can use when doing the /house command to replace the
+# house so you don't have to type it out.
 Houses:
   Gryffindor:
     points: 0
@@ -28,14 +48,16 @@ Houses:
     chatColor: DARK_GREEN
     shortcut: s
 
-# Messages Section
+# These are messages set up depending on varaible. You can edit them to any language you would like.
+# Variables will only be filled in when present. Otherwise they will fill with an empty string.
+# Here are the variables you can use in the string.
 # %player% = player who receives points
 # %points% = points given/taken
 # %reason% = reason
 # %house% = house
 # %hc% = house color
 # %giver% = person who altered the points
-# if the section doesn't have the reason or player given to then it will show up as blank!
+# Also supports minecraft colors with & as the color variable.
 give:
   houseOnly: "&e%giver%&r has rewarded %hc%%house%&r with &e%points%&r!"
   playerNoReason: "&e%giver%&r has rewarded &e%player%&r %hc%%house%&r with &e%points%&r!"
@@ -47,7 +69,8 @@ take:
   playerWithReason: "&e%giver%&r has taken &e%points%&r from &e%player%&r in %hc%%house%&r for %reason%!"
   reasonOnly: "&e%giver%&r has taken &e%points%&r from %hc%%house%&r for %reason%!"
 
-# You can change the command here, incase you want to change to another language.
+# This list can be as long as you like, add this in the instance that another
+# language community would like to change the word for adding or subtracting points.
 # WARNING: MUST BE IN LOWER CASE
 positive:
 - add

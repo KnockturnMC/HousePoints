@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +43,12 @@ public class HousePoints extends JavaPlugin {
     @Override
     public void onEnable(){
         setInstance(this);
+
+        File configFile = new File(this.getDataFolder(), "config.yml");
+        if(!getDataFolder().exists() || !configFile.exists()) {
+            saveDefaultConfig();
+        }
+
         Configuration.load();
         getCommand("points").setExecutor(new HousePointsCommand());
     }
