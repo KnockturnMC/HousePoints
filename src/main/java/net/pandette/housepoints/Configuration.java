@@ -109,6 +109,7 @@ public class Configuration {
     }
 
     private static void setLocation(Location location, ConfigurationSection section, String path) {
+        if(location == null) return;
         section.set(path + ".world", location.getWorld().getName());
         section.set(path + ".x", location.getBlockX());
         section.set(path + ".y", location.getBlockY());

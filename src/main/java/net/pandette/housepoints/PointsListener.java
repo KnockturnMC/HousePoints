@@ -102,7 +102,6 @@ public class PointsListener implements Listener {
         sign.setLine(0, house.getChatColor() + house.getName());
         sign.setLine(2, String.valueOf(house.getPoints()));
         sign.update();
-        event.setCancelled(true);
         HousePoints.getSignLocations().add(loc);
     }
 
