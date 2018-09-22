@@ -3,12 +3,17 @@ package net.pandette.housepoints;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,8 +57,8 @@ public class HousePointsCommand implements CommandExecutor {
 
         List<String> positive = configuration.getStringList("positive");
         List<String> negative = configuration.getStringList("negative");
-        if(positive.isEmpty()) positive = Arrays.asList("add", "plus", "give", "+");
-        if(negative.isEmpty()) negative = Arrays.asList("remove", "take", "subtract", "-");
+        if (positive.isEmpty()) positive = Arrays.asList("add", "plus", "give", "+");
+        if (negative.isEmpty()) negative = Arrays.asList("remove", "take", "subtract", "-");
         POSITIVE = positive;
         NEGATIVE = negative;
     }
@@ -61,37 +66,37 @@ public class HousePointsCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         if (args.length == 0) {
-            if(!sender.hasPermission(Permission.SEE)) {
+            if (!sender.hasPermission(Permission.SEE)) {
                 sender.sendMessage(Permission.NO_PERMISSION_COMMAND);
                 return false;
             }
 
             sender.sendMessage(TITLE);
-            for(House house : HousePoints.getHouses()) {
+            for (House house : HousePoints.getHouses()) {
                 sender.sendMessage(house.getChatColor() + house.getName() + CHAT_COLOR + BREAK + house.getPoints());
             }
             return true;
         }
 
-        if(args.length < 3) {
+        if (args.length < 3) {
             sender.sendMessage(SYNTAX);
             return false;
         }
 
         final String name;
-        if(sender instanceof Player) {
+        if (sender instanceof Player) {
             name = ((Player) sender).getDisplayName();
         } else name = HousePoints.getInstance().getConfig().getString("consoleSender");
 
         House house = null;
-        for(House h : HousePoints.getHouses()) {
-            if(args[1].equalsIgnoreCase(h.getName()) || args[1].equalsIgnoreCase(h.getShortcut())) {
+        for (House h : HousePoints.getHouses()) {
+            if (args[1].equalsIgnoreCase(h.getName()) || args[1].equalsIgnoreCase(h.getShortcut())) {
                 house = h;
                 break;
             }
         }
 
-        if(house == null) {
+        if (house == null) {
             sender.sendMessage(NOT_A_HOUSE);
             return false;
         }
@@ -107,9 +112,9 @@ public class HousePointsCommand implements CommandExecutor {
         final String path;
         final String playerName;
 
-        if(args.length > 3) {
+        if (args.length > 3) {
             final Player player = Bukkit.getPlayer(args[3]);
-            if(player == null) {
+            if (player == null) {
                 playerName = null;
             } else {
                 playerName = player.getDisplayName();
@@ -119,8 +124,8 @@ public class HousePointsCommand implements CommandExecutor {
         }
 
         final HousePointsEvent event;
-        if(POSITIVE.contains(args[0].toLowerCase())) {
-            if(!sender.hasPermission(Permission.GIVE) && !sender.hasPermission(Permission.GIVE + "." + house.getName().toUpperCase())) {
+        if (POSITIVE.contains(args[0].toLowerCase())) {
+            if (!sender.hasPermission(Permission.GIVE) && !sender.hasPermission(Permission.GIVE + "." + house.getName().toUpperCase())) {
                 sender.sendMessage(Permission.NO_PERMISSION_COMMAND);
                 return false;
             }
@@ -130,9 +135,8 @@ public class HousePointsCommand implements CommandExecutor {
 
             house.setPoints(house.getPoints() + points);
             path = "give";
-        }
-        else if(NEGATIVE.contains(args[0].toLowerCase())) {
-            if(!sender.hasPermission(Permission.TAKE) && !sender.hasPermission(Permission.TAKE + "." + house.getName().toUpperCase())) {
+        } else if (NEGATIVE.contains(args[0].toLowerCase())) {
+            if (!sender.hasPermission(Permission.TAKE) && !sender.hasPermission(Permission.TAKE + "." + house.getName().toUpperCase())) {
                 sender.sendMessage(Permission.NO_PERMISSION_COMMAND);
                 return false;
             }
@@ -152,7 +156,7 @@ public class HousePointsCommand implements CommandExecutor {
         final FileConfiguration config = HousePoints.getInstance().getConfig();
         String message;
         String reason = "";
-        if(args.length == 3) {
+        if (args.length == 3) {
             message = config.getString(path + ".houseOnly");
         } else if (args.length == 4 && playerName != null) {
             message = config.getString(path + ".playerNoReason");
@@ -160,17 +164,20 @@ public class HousePointsCommand implements CommandExecutor {
             message = config.getString(path + ".reasonOnly");
         } else if (playerName != null) {
             message = config.getString(path + ".playerWithReason");
-            String[] sub = Arrays.copyOfRange(args, 4,args.length + 1);
+            String[] sub = Arrays.copyOfRange(args, 4, args.length + 1);
             reason = StringUtils.join(sub, " ");
         } else {
             message = config.getString(path + ".reasonOnly");
-            String[] sub = Arrays.copyOfRange(args, 3,args.length + 1);
+            String[] sub = Arrays.copyOfRange(args, 3, args.length + 1);
             reason = StringUtils.join(sub, " ");
         }
 
         message = ChatColor.translateAlternateColorCodes('&', message);
 
         Bukkit.broadcastMessage(formatMessage(message, event, reason));
+        for (Location location : HousePoints.getSignLocations()) {
+            changeHouseSign(house, location);
+        }
 
         return true;
     }
@@ -183,17 +190,10 @@ public class HousePointsCommand implements CommandExecutor {
         }
         return false;
     }
-/*
-# %player% = player who receives points
-# %points% = points given/taken
-# %reason% = reason
-# %house% = house
-# %hc% = house color
-# %giver% = person who altered the points
- */
+
     private static String formatMessage(String message, HousePointsEvent event, String reason) {
         String pName = event.getReceiver();
-        if(pName == null) pName = "";
+        if (pName == null) pName = "";
         return message
                 .replace("%player%", pName)
                 .replace("%points%", String.valueOf(Math.abs(event.getPoints())))
@@ -206,5 +206,68 @@ public class HousePointsCommand implements CommandExecutor {
 
     private static String chatColorString(String color) {
         return color.toUpperCase().replace(" ", "_");
+    }
+
+    private void changeHouseSign(House house, Location loc) {
+        Material signMaterial = loc.getBlock().getType();
+
+        if (signMaterial != Material.WALL_SIGN) {
+            HousePoints.getSignLocations().remove(loc);
+            return;
+        }
+
+        Sign sign = (Sign) loc.getBlock().getState();
+
+        if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(house.getName())) {
+            sign.setLine(0, house.getChatColor() + house.getName());
+            sign.setLine(2, String.valueOf(house.getPoints()));
+            sign.update();
+        }
+
+        List<House> positions = getHousePositions();
+        for (House h : HousePoints.getHouses()) {
+            if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(h.getName())) {
+                Block block = loc.getBlock();
+                org.bukkit.material.Sign s = (org.bukkit.material.Sign) block.getState().getData();
+                Block connected = block.getRelative(s.getAttachedFace());
+
+                int position = positions.indexOf(h);
+                for (int i = 1; i < HousePoints.getHouses().size(); i++) {
+                    setBlock(connected, Material.GLASS, i);
+                }
+
+
+                for (int i = 1; i < positions.size() + 1 - position; i++) {
+                    setBlock(connected, h.getMaterial(), i);
+                }
+            }
+        }
+    }
+
+
+    private void setBlock(Block connected, Material material, int i) {
+        Location location = connected.getLocation();
+        location.setY(connected.getLocation().getY() + i);
+        location.getBlock().setType(material);
+    }
+
+    private void setBlock(Block connected, House house, int i) {
+        Location location = connected.getLocation();
+        location.setY(connected.getLocation().getY() + i);
+        location.getBlock().setType(house.getMaterial());
+        if (house.getMaterial() == Material.WOOL) {
+            location.getBlock().setData(house.getColor().getDyeData());
+        }
+    }
+
+    private List<House> getHousePositions() {
+        List<House> houses = new ArrayList<>(HousePoints.getHouses());
+        houses.sort((a, b) -> {
+            int A = a.getPoints();
+            int B = b.getPoints();
+            return Integer.compare(B, A);
+        });
+
+        return houses;
     }
 }

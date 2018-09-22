@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,9 +11,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /*
     House points is a plugin for house points created for Minecraft
@@ -62,12 +58,6 @@ public class PointsListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onPointsEvent(HousePointsEvent event) {
-        for (Location location : HousePoints.getSignLocations()) {
-            changeHouseSign(event, location);
-        }
-    }
 
     @EventHandler
     public void blockBreak(BlockBreakEvent event) {
@@ -115,71 +105,6 @@ public class PointsListener implements Listener {
         event.setCancelled(true);
         HousePoints.getSignLocations().add(loc);
     }
-
-    private void changeHouseSign(HousePointsEvent event, Location loc) {
-        Material signMaterial = loc.getBlock().getType();
-
-        if (signMaterial != Material.WALL_SIGN) {
-            HousePoints.getSignLocations().remove(loc);
-            return;
-        }
-
-        Sign sign = (Sign) loc.getBlock().getState();
-        House house = event.getHouse();
-
-        if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(house.getName())) {
-            sign.setLine(0, house.getChatColor() + house.getName());
-            sign.setLine(2, String.valueOf(house.getPoints()));
-            sign.update();
-        }
-
-        List<House> positions = getHousePositions();
-        for (House h : HousePoints.getHouses()) {
-            if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(h.getName())) {
-                Block block = loc.getBlock();
-                org.bukkit.material.Sign s = (org.bukkit.material.Sign) block.getState().getData();
-                Block connected = block.getRelative(s.getAttachedFace());
-
-
-                int position = positions.indexOf(h);
-                for (int i = 1; i < HousePoints.getHouses().size(); i++) {
-                    setBlock(connected, Material.GLASS, i);
-                }
-
-
-                for(int i = 1; i < positions.size() + 1 - position; i++) {
-                    setBlock(connected, h.getMaterial(), i);
-                }
-            }
-        }
-        event.setCancelled(true);
-
-    }
-
-    private void setBlock(Block connected, Material material, int i) {
-        Location location = connected.getLocation();
-        location.setY(connected.getLocation().getY() + i);
-        location.getBlock().setType(material);
-    }
-
-    private void setBlock(Block connected, House house, int i) {
-        Location location = connected.getLocation();
-        location.setY(connected.getLocation().getY() + i);
-        location.getBlock().setType(house.getMaterial());
-        if(house.getMaterial() == Material.WOOL) {
-            location.getBlock().setData(house.getColor().getDyeData());
-        }
-    }
-
-    private List<House> getHousePositions() {
-        List<House> houses = new ArrayList<>(HousePoints.getHouses());
-        houses.sort((a, b) -> {
-            int A = a.getPoints();
-            int B = b.getPoints();
-            return Integer.compare(B, A);
-        });
-
-        return houses;
-    }
+    
 
 }
