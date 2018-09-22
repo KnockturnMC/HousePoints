@@ -10,6 +10,14 @@ Java 8
 
 This plugin was originally intended for a Harry Potter themed server, but I have recently modified it so that you could also use it on another server and put any house name you like.
 
+## Command
+`/points [give/take] [house] [points] (username) (reason)`
+* Give/Take can change depending on config
+* House is either the name of the house or the shortcut in the configuration
+* points are the amount
+* Username is a player you wish to display earning the points
+* Reason is why the user deserves those points.
+
 ## Permissions
 
 HousePoints.see - Permission to view house standings
