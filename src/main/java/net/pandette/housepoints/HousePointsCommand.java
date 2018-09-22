@@ -178,7 +178,7 @@ public class HousePointsCommand implements CommandExecutor {
 
         Bukkit.broadcastMessage(formatMessage(message, event, reason));
 
-        for (Location location : HousePoints.getSignLocations()) {
+        for (Location location : new ArrayList<>(HousePoints.getSignLocations())) {
             changeHouseSign(house, location);
         }
 
