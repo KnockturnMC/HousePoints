@@ -12,6 +12,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.material.Wool;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -259,7 +260,7 @@ public class HousePointsCommand implements CommandExecutor {
         location.setY(connected.getLocation().getY() + i);
         location.getBlock().setType(house.getMaterial());
         if (house.getMaterial() == Material.WOOL) {
-            location.getBlock().setData(house.getColor().getDyeData());
+            ((Wool) location.getBlock()).setColor(house.getColor());
         }
     }
 
