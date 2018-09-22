@@ -6,6 +6,10 @@ Spigot 1.12
 
 Java 8
 
+## Note
+
+This plugin was originally intended for a Harry Potter themed server, but I have recently modified it so that you could also use it on another server and put any house name you like.
+
 ## Permissions
 
 HousePoints.see - Permission to view house standings
