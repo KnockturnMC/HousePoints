@@ -51,11 +51,29 @@ public class PointsListener implements Listener {
             return;
         }
 
+        Sign sign = (Sign) event.getBlock().getState();
+
+        if (sign.getType() == Material.SIGN_POST) {
+            event.getPlayer().sendMessage(WALL_SIGN);
+            event.setCancelled(true);
+            return;
+        }
+
+        Location loc = event.getBlock().getLocation();
+
         for (House house : HousePoints.getHouses()) {
             if (ChatColor.stripColor(event.getLine(0)).equalsIgnoreCase("[" + house.getName() + "]")) {
-                createHouseSign(event, house.getName());
+                sign.setLine(0, house.getChatColor() + house.getName());
+                sign.setLine(2, String.valueOf(house.getPoints()));
+                sign.update();
+
+                HousePoints.getSignLocations().add(loc);
+                return;
             }
         }
+
+        event.setCancelled(true);
+        event.getPlayer().sendMessage(NOT_A_HOUSE);
     }
 
 
@@ -72,37 +90,6 @@ public class PointsListener implements Listener {
 
         player.sendMessage(Permission.NO_PERMISSION_ACTION);
         event.setCancelled(true);
-    }
-
-    private void createHouseSign(SignChangeEvent event, String houseName) {
-        Sign sign = (Sign) event.getBlock().getState();
-
-        if (sign.getType() == Material.SIGN_POST) {
-            event.getPlayer().sendMessage(WALL_SIGN);
-            event.setCancelled(true);
-            return;
-        }
-
-        Location loc = event.getBlock().getLocation();
-
-        House house = null;
-        for (House h : HousePoints.getHouses()) {
-            if (h.getName().equalsIgnoreCase(houseName)) {
-                house = h;
-                break;
-            }
-        }
-
-        if (house == null) {
-            event.setCancelled(true);
-            event.getPlayer().sendMessage(NOT_A_HOUSE);
-            return;
-        }
-
-        sign.setLine(0, house.getChatColor() + house.getName());
-        sign.setLine(2, String.valueOf(house.getPoints()));
-        sign.update();
-        HousePoints.getSignLocations().add(loc);
     }
 
 

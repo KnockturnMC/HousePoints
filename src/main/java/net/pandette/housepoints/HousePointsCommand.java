@@ -233,22 +233,21 @@ public class HousePointsCommand implements CommandExecutor {
 
                 int position = positions.indexOf(h);
                 for (int i = 1; i < positions.size() + 1; i++) {
-                    setBlock(connected, Material.GLASS, i);
+                    setBlock(connected, i);
                 }
 
-
                 for (int i = 1; i < positions.size() + 1 - position; i++) {
-                    setBlock(connected, h.getMaterial(), i);
+                    setBlock(connected, h, i);
                 }
             }
         }
     }
 
 
-    private void setBlock(Block connected, Material material, int i) {
+    private void setBlock(Block connected, int i) {
         Location location = connected.getLocation();
         location.setY(connected.getLocation().getY() + i);
-        location.getBlock().setType(material);
+        location.getBlock().setType(Material.GLASS);
     }
 
     private void setBlock(Block connected, House house, int i) {

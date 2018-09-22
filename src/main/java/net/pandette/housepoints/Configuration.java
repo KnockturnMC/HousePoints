@@ -34,17 +34,17 @@ import java.util.function.BiConsumer;
 @Value
 public class Configuration {
 
-    public static void load() {
+    static void load() {
         loadLocations();
         loadHouses();
     }
 
-    public static void save() {
+    static void save() {
         saveHouses();
         saveLocations();
     }
 
-    public static void reload() {
+    static void reload() {
         HousePoints.getHouses().clear();
         HousePoints.getSignLocations().clear();
         load();
@@ -58,6 +58,7 @@ public class Configuration {
         FileConfiguration config = HousePoints.getInstance().getConfig();
         config.set("Locations", null);
         ConfigurationSection locations = config.getConfigurationSection("Locations");
+        if(locations == null) config.createSection("Locations");
         for (Location location : HousePoints.getSignLocations()) {
             setLocation(location, locations, String.valueOf(HousePoints.getSignLocations().indexOf(location)));
         }
@@ -109,7 +110,6 @@ public class Configuration {
     }
 
     private static void setLocation(Location location, ConfigurationSection section, String path) {
-        if(location == null) return;
         section.set(path + ".world", location.getWorld().getName());
         section.set(path + ".x", location.getBlockX());
         section.set(path + ".y", location.getBlockY());
