@@ -49,6 +49,8 @@ public class HousePoints extends JavaPlugin {
             saveDefaultConfig();
         }
 
+        new PointsListener();
+
         Configuration.load();
         getCommand("points").setExecutor(new HousePointsCommand());
     }
