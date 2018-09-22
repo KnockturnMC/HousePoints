@@ -105,6 +105,6 @@ public class PointsListener implements Listener {
         event.setCancelled(true);
         HousePoints.getSignLocations().add(loc);
     }
-    
+
 
 }
