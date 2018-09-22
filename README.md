@@ -3,6 +3,7 @@
 ## Dependencies
 
 Spigot 1.12
+
 Java 8
 
 ## Permissions
