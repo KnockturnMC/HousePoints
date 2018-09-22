@@ -26,13 +26,18 @@ HousePoints.delete.sign - Permission to delete a housepoints sign
 
 ```yaml
 # This section is configuration to setup houses.  They can be any name you would like, 
-# but whatever you name them must also appear on
-# the sign for points. If you name them something too long to fit on a minecraft sign, 
-# then you will not be able to make a points sign.
+# but whatever you name them must also appear on the sign for points. 
+
+# If you name them something too long to fit on a minecraft sign, then you will not be 
+# able to make a points sign.
+
 # The points portion of this updates on load and unload.
+
 # The block can be set to anything in the Material enum, but should be a block, if it is set to wool, 
 # setting a DyeColor from the spigot enum will change the color of the wool.
+
 # ChatColor is the color that the house will appear when in chat.  Pick this from ChatColor enum.
+
 # Short cut is a short cut you can use when doing the /house command to replace the 
 # house so you don't have to type it out.
 Houses:
