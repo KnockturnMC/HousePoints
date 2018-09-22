@@ -58,7 +58,11 @@ public class Configuration {
         FileConfiguration config = HousePoints.getInstance().getConfig();
         config.set("Locations", null);
         ConfigurationSection locations = config.getConfigurationSection("Locations");
-        if(locations == null) config.createSection("Locations");
+        if(locations == null) {
+            config.createSection("Locations");
+            locations = config.getConfigurationSection("Locations");
+        }
+
         for (Location location : HousePoints.getSignLocations()) {
             setLocation(location, locations, String.valueOf(HousePoints.getSignLocations().indexOf(location)));
         }

@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -260,9 +261,11 @@ public class HousePointsCommand implements CommandExecutor {
         location.setY(connected.getLocation().getY() + i);
         location.getBlock().setType(house.getMaterial());
         if (house.getMaterial() == Material.WOOL) {
-            Wool wool = (Wool) location.getBlock().getState().getData();
+            BlockState state = location.getBlock().getState();
+            Wool wool = (Wool) state.getData();
             wool.setColor(house.getColor());
-            location.getBlock().getState().setData(wool);
+            state.setData(wool);
+            state.update();
         }
     }
 
