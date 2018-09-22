@@ -1,5 +1,7 @@
 # HousePoints
 
+![banner](https://i.imgur.com/WekXaRn.png "House Points Banner")
+
 ## Dependencies
 
 Spigot 1.12
