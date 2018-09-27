@@ -53,7 +53,7 @@ public class PointsListener implements Listener {
 
         Sign sign = (Sign) event.getBlock().getState();
 
-        if (sign.getType() == Material.SIGN_POST) {
+        if (sign.getType() != Material.WALL_SIGN) {
             event.getPlayer().sendMessage(WALL_SIGN);
             return;
         }
