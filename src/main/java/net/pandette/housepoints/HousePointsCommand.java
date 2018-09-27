@@ -80,6 +80,16 @@ public class HousePointsCommand implements CommandExecutor {
             return true;
         }
 
+        if(args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+            if(!sender.hasPermission(Permission.RELOAD)) {
+                sender.sendMessage(Permission.NO_PERMISSION_COMMAND);
+                return false;
+            }
+
+            Configuration.reload();
+            return true;
+        }
+
         if (args.length < 3) {
             sender.sendMessage(SYNTAX);
             return false;

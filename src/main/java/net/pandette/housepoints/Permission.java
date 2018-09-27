@@ -30,6 +30,7 @@ class Permission {
     static final String TAKE = HOUSE_POINTS + "take";
     static final String SIGN = HOUSE_POINTS + "create.sign";
     static final String DELETE_SIGN = HOUSE_POINTS + "delete.sign";
+    static final String RELOAD = HOUSE_POINTS + "reload";
 
     static final String NO_PERMISSION_COMMAND = ChatColor.RED + "You do not have permission to perform this command!";
     static final String NO_PERMISSION_ACTION = ChatColor.RED + "You do not have permission to do that!";
