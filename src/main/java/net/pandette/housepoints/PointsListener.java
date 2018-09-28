@@ -46,10 +46,7 @@ public class PointsListener implements Listener {
     public void onSignChangeEvent(SignChangeEvent event) {
         Player player = event.getPlayer();
 
-        if (!player.hasPermission(Permission.SIGN)) {
-            player.sendMessage(Permission.NO_PERMISSION_COMMAND);
-            return;
-        }
+        if (!player.hasPermission(Permission.SIGN)) return;
 
         Sign sign = (Sign) event.getBlock().getState();
 
@@ -71,8 +68,6 @@ public class PointsListener implements Listener {
                 return;
             }
         }
-
-        event.getPlayer().sendMessage(NOT_A_HOUSE);
     }
 
 
