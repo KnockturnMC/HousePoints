@@ -1,12 +1,3 @@
-package net.pandette.housepoints;
-
-import lombok.Setter;
-import lombok.Value;
-import lombok.experimental.NonFinal;
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
-
 /*
     House points is a plugin for house points created for Minecraft
     Copyright (C) 2018 Kimberly Boynton
@@ -27,16 +18,27 @@ import org.bukkit.Material;
     To request information, make an issue on the github page for this
     plugin.
  */
-@Value
-public class House {
+package net.pandette.housepoints.config;
 
-    private final String name;
-    @NonFinal
-    @Setter
-    private int points;
-    private final Material material;
-    private final DyeColor color;
-    private final ChatColor chatColor;
-    private final String shortcut;
+import lombok.Value;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
+@Value
+public class Permission {
+
+
+    private final String housePoints = "PointsPlugin.";
+    private final String see = housePoints + "see";
+    private final String give = housePoints + "give";
+    private final String take = housePoints + "take";
+    private final String sign = housePoints + "create.sign";
+    private final String deleteSign = housePoints + "delete.sign";
+    private final String reload = housePoints + "reload";
+
+    @Inject
+    Permission(){}
 
 }
