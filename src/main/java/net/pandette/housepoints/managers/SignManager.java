@@ -32,7 +32,8 @@ public class SignManager {
 
     public void removeLocation(Location location) {
         locationList.remove(location);
-        if (configuration.getRepresentationType() == PointRepresentation.ITEM) {
+        if (configuration.getRepresentationType() == PointRepresentation.ITEM_RENAME ||
+                configuration.getRepresentationType() == PointRepresentation.ITEM_NBT) {
             Location above = location.clone();
             above.setY(above.getY() + 1);
             for (Entity e : above.getWorld().getEntitiesByClass(ArmorStand.class)) {
