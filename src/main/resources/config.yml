@@ -104,12 +104,12 @@ messages:
   give:
     houseOnly: "&e{giver}&r has rewarded {hc}{house}&r with &e{points}&r!"
     playerNoReason: "&e{giver}&r has rewarded &e{player}&r {hc}{house}&r with &e{points}&r!"
-    playerWithReason: "&e{giver}&r has rewarded &e{player}&r {hc}{house}&r with &e{points}&r for {reason)!"
+    playerWithReason: "&e{giver}&r has rewarded &e{player}&r {hc}{house}&r with &e{points}&r for {reason}!"
     reasonOnly: "&e{giver}&r has rewarded {hc}{house}&r with &e{points}&r for {reason}!"
   take:
     houseOnly: "&e{giver}&r has taken &e{points}&r from {hc}{house}&r!"
     playerNoReason: "&e{giver}&r has taken &e{points}&r from &e{player}&r in {hc}{house}&r!"
-    playerWithReason: "&e{giver}&r has taken &e{points}&r from &e{player}&r in {hc}{house}&r for {reason)!"
+    playerWithReason: "&e{giver}&r has taken &e{points}&r from &e{player}&r in {hc}{house}&r for {reason}!"
     reasonOnly: "&e{giver}&r has taken &e{points}&r from {hc}{house}&r for {reason}!"
   permission:
     no_permission_command: "&cYou do not have permission to perform this command!"

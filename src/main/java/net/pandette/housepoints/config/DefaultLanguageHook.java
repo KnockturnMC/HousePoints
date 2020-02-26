@@ -27,4 +27,5 @@ public class DefaultLanguageHook implements LanguageHook {
     public void broadCastMessage(String message) {
         Bukkit.broadcastMessage(message);
     }
+
 }

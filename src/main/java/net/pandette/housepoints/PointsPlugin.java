@@ -37,6 +37,7 @@ import java.io.File;
 public class PointsPlugin extends JavaPlugin {
 
     private SingleComponent component;
+
     @Getter
     @Setter
     private LanguageHook languageHook;

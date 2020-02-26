@@ -55,20 +55,32 @@ import javax.inject.Singleton;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class runs the main commands hub allowing the points plugin to operate.
+ */
 @Singleton
 public class HousePointsCommand implements CommandExecutor {
 
+    /*
+    Some default strings in case someone fumbles.
+     */
     private static final String BREAK = ": ";
     private static final String DEFAULT_NO_PERMISSION = "&cYou do not have permission to perform this command!";
     private static final String DEFAULT_SYNTAX = "&7Correct House Points Syntax is /points [+/-] [house] [points] (player) (reason)";
     private static final String DEFAULT_NOT_A_HOUSE = "&cThat doesn't appear to be a house nor a shortcut for a house!";
     private static final String DEFAULT_EVENT_CANCELLED = "&cYour event got cancelled by another plugin!";
 
+    /*
+    Class dependencies
+     */
     private final Configuration configuration;
     private final HouseManager houseManager;
     private final Permission permission;
     private final SignManager signManager;
 
+    /*
+    Use injection from Dagger to get dependencies.
+     */
     @Inject
     public HousePointsCommand(Configuration configuration, HouseManager houseManager, Permission permission,
                               SignManager signManager) {
@@ -78,6 +90,14 @@ public class HousePointsCommand implements CommandExecutor {
         this.signManager = signManager;
     }
 
+    /**
+     * Entry point for the command.
+     * @param sender Sender
+     * @param command Command
+     * @param s String
+     * @param args Args
+     * @return Return if the command worked or not.
+     */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         LanguageHook languageHook = PointsPlugin.getInstance().getLanguageHook();
@@ -177,6 +197,9 @@ public class HousePointsCommand implements CommandExecutor {
         return true;
     }
 
+    /*
+    This gets the message based on the command and prepares it to be broadcast.
+     */
     private String getMessage(String[] args, LanguageHook languageHook, Player senderPlayer, String path, String playerName, HousePointsEvent event) {
         String message;
         String reason = "";
@@ -191,7 +214,7 @@ public class HousePointsCommand implements CommandExecutor {
                     "&e{giver}&r : {hc}{house}&r - &e{points}&r for {reason}!");
         } else if (playerName != null) {
             message = languageHook.getMessage(path + ".playerWithReason", senderPlayer,
-                    "&e{giver}&r : &e{player}&r {hc}{house}&r - &e{points}&r for {reason)!");
+                    "&e{giver}&r : &e{player}&r {hc}{house}&r - &e{points}&r for {reason}!");
             String[] sub = Arrays.copyOfRange(args, 4, args.length + 1);
             reason = StringUtils.join(sub, " ");
         } else {
@@ -204,6 +227,13 @@ public class HousePointsCommand implements CommandExecutor {
         return formatMessage(message, event, reason);
     }
 
+    /**
+     * This method reloads data that can be reloaded.
+     * @param sender Sender of the command
+     * @param languageHook Language Hook to allow an external language adaptor.
+     * @param senderPlayer Sender player to allow for customizing language based on player.
+     * @return Returns whether the command was successful or not.
+     */
     private boolean reloadData(CommandSender sender, LanguageHook languageHook, Player senderPlayer) {
         if (!sender.hasPermission(permission.getReload())) {
             sender.sendMessage(languageHook.getMessage("permission.no_permission_command", senderPlayer,
@@ -216,6 +246,14 @@ public class HousePointsCommand implements CommandExecutor {
         return true;
     }
 
+    /**
+     * Sends the house standings to the players.
+     *
+     * @param sender Command sender
+     * @param languageHook Language Hook to allow an external language adaptor.
+     * @param senderPlayer Sender player to allow for customizing language based on player.
+     * @return Returns whether the command was successful or not.
+     */
     private boolean sendHouseStandings(CommandSender sender, LanguageHook languageHook, Player senderPlayer) {
         if (!sender.hasPermission(permission.getSee())) {
             sender.sendMessage(languageHook.getMessage("permission.no_permission_command", senderPlayer,
@@ -231,6 +269,15 @@ public class HousePointsCommand implements CommandExecutor {
         return true;
     }
 
+    /**
+     * This validates whether the event gets cancelled or not.
+     *
+     * @param sender Command sender
+     * @param event House Points event
+     * @param languageHook Language Hook to allow an external language adaptor.
+     * @param senderPlayer Sender player to allow for customizing language based on player.
+     * @return Whether the event went through or was cancelled.
+     */
     private boolean validateEvent(CommandSender sender, HousePointsEvent event, LanguageHook languageHook, Player senderPlayer) {
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -240,6 +287,13 @@ public class HousePointsCommand implements CommandExecutor {
         return false;
     }
 
+    /**
+     * This formats the message in preparation for broadcast.
+     * @param message Message
+     * @param event House points event
+     * @param reason Reason for points change
+     * @return Returns the message in a formatted form.
+     */
     private static String formatMessage(String message, HousePointsEvent event, String reason) {
         String pName = event.getReceiver();
         if (pName == null) pName = "";
@@ -252,6 +306,12 @@ public class HousePointsCommand implements CommandExecutor {
                 .replace("{giver}", event.getGiver());
     }
 
+    /**
+     * This changes the house points sign. This will load the chunk first so the changes go through for blocks.
+     *
+     * @param house House to change for.
+     * @param loc Location to change
+     */
     private void changeHouseSign(House house, Location loc) {
         if (!Tag.WALL_SIGNS.isTagged(loc.getBlock().getType())) {
             signManager.removeLocation(loc);
@@ -312,7 +372,11 @@ public class HousePointsCommand implements CommandExecutor {
         above.setY(above.getY() + 1);
         above.setX(above.getX() + .5);
         above.setZ(above.getZ() + .5);
+
+        above.setDirection(facing.getDirection());
+        above.setPitch(0);
         ArmorStand e = above.getWorld().spawn(above, ArmorStand.class);
+
         PersistentDataContainer container = e.getPersistentDataContainer();
         container.set(PointsPlugin.getInstance().getNamespacedKey(), PersistentDataType.BYTE, (byte) 0);
 
@@ -339,6 +403,11 @@ public class HousePointsCommand implements CommandExecutor {
     }
 
 
+    /**
+     * This sets the block with glass if we have a block change type.
+     * @param connected The location its connected to.
+     * @param i
+     */
     private void setBlock(Block connected, int i) {
         Location location = connected.getLocation();
         location.setY(connected.getLocation().getY() + i);
