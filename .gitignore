@@ -4,3 +4,4 @@ target/
 .classpath
 .idea/
 TheHousePoints.iml
+dependency-reduced-pom.xml

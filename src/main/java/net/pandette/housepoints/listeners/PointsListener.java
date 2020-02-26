@@ -21,7 +21,6 @@
 package net.pandette.housepoints.listeners;
 
 import net.pandette.housepoints.PointsPlugin;
-import net.pandette.housepoints.config.Configuration;
 import net.pandette.housepoints.config.LanguageHook;
 import net.pandette.housepoints.config.Permission;
 import net.pandette.housepoints.dtos.House;
@@ -48,15 +47,12 @@ public class PointsListener implements Listener {
     private final Permission permission;
     private final HouseManager houseManager;
     private final SignManager signManager;
-    private final Configuration configuration;
 
     @Inject
-    PointsListener(Permission permission, HouseManager houseManager, SignManager signManager,
-                   Configuration configuration) {
+    PointsListener(Permission permission, HouseManager houseManager, SignManager signManager) {
         this.permission = permission;
         this.houseManager = houseManager;
         this.signManager = signManager;
-        this.configuration = configuration;
     }
 
     private static final String DEFAULT_WALL_SIGN = "&cOnly wall signs are supported.";

@@ -42,7 +42,7 @@ Houses:
     shortcut: g
     custom-item:
       rename: gryffindor-{rank}
-      id: 1000000
+      id: 1000001
   Ravenclaw:
     points: 0
     material: BLUE_WOOL

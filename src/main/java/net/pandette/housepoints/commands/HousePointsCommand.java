@@ -335,12 +335,7 @@ public class HousePointsCommand implements CommandExecutor {
 
         if (!configuration.isShowingPointsRepresentation()) return;
 
-        House houseType = null;
-        for (House h : houseManager.getHouses()) {
-            if (!ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(h.getName())) continue;
-            houseType = h;
-            break;
-        }
+        House houseType = houseManager.getHouse(ChatColor.stripColor(sign.getLine(0)));
         if (houseType == null) return;
 
         Block block = loc.getBlock();
@@ -406,7 +401,7 @@ public class HousePointsCommand implements CommandExecutor {
     /**
      * This sets the block with glass if we have a block change type.
      * @param connected The location its connected to.
-     * @param i
+     * @param i - number to go up
      */
     private void setBlock(Block connected, int i) {
         Location location = connected.getLocation();
@@ -417,6 +412,11 @@ public class HousePointsCommand implements CommandExecutor {
     private void setBlock(Block connected, House house, int i) {
         Location location = connected.getLocation();
         location.setY(connected.getLocation().getY() + i);
+        if (!house.getMaterial().isBlock()) {
+            throw new IllegalArgumentException("The material provided for the house is only for when using " +
+                    "PointType: BLOCK & the material provided is not a block. Please fix this or swap to " +
+                    "PointType: ITEM_RENAME or ITEM_NBT, and set custom-item under custom-item.material.");
+        }
         location.getBlock().setType(house.getMaterial());
     }
 }
