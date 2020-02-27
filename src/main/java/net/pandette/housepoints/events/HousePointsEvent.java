@@ -1,10 +1,3 @@
-package net.pandette.housepoints;
-
-import lombok.Data;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-
 /*
     House points is a plugin for house points created for Minecraft
     Copyright (C) 2018 Kimberly Boynton
@@ -25,6 +18,14 @@ import org.bukkit.event.HandlerList;
     To request information, make an issue on the github page for this
     plugin.
  */
+package net.pandette.housepoints.events;
+
+import lombok.Data;
+import net.pandette.housepoints.dtos.House;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
+
 @Data
 public class HousePointsEvent extends Event implements Cancellable{
 

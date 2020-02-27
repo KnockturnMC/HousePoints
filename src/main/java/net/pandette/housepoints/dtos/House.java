@@ -1,7 +1,3 @@
-package net.pandette.housepoints;
-
-import org.bukkit.ChatColor;
-
 /*
     House points is a plugin for house points created for Minecraft
     Copyright (C) 2018 Kimberly Boynton
@@ -22,17 +18,25 @@ import org.bukkit.ChatColor;
     To request information, make an issue on the github page for this
     plugin.
  */
-class Permission {
+package net.pandette.housepoints.dtos;
 
-    private static final String HOUSE_POINTS = "HousePoints.";
-    static final String SEE = HOUSE_POINTS + "see";
-    static final String GIVE = HOUSE_POINTS + "give";
-    static final String TAKE = HOUSE_POINTS + "take";
-    static final String SIGN = HOUSE_POINTS + "create.sign";
-    static final String DELETE_SIGN = HOUSE_POINTS + "delete.sign";
-    static final String RELOAD = HOUSE_POINTS + "reload";
+import lombok.Setter;
+import lombok.Value;
+import lombok.experimental.NonFinal;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 
-    static final String NO_PERMISSION_COMMAND = ChatColor.RED + "You do not have permission to perform this command!";
-    static final String NO_PERMISSION_ACTION = ChatColor.RED + "You do not have permission to do that!";
+@Value
+public class House {
+
+    @NonFinal
+    @Setter
+    private int points;
+    private final String name;
+    private final Material material;
+    private final ChatColor chatColor;
+    private final String shortcut;
+    private final String customItemRename;
+    private final Integer customItemID;
 
 }
