@@ -55,35 +55,73 @@ HousePoints.delete.sign - Permission to delete a housepoints sign
 
 # Short cut is a short cut you can use when doing the /house command to replace the 
 # house so you don't have to type it out.
+#
+# custom-item is the ability to use custom models with an armor stand. Since there are two ways of doing this,
+# I have set it up so you can do it both ways.
+#
+# The first way uses Optifine where it renames a block and places it as a helmet
+# For this, {rank} needs to be located where you will rename it and the rank will be:
+# 1 = 1st place, 2 = 2nd etc...
+#
+# The second way uses the Custom Model Data on Item Meta and sets the id.
+# For the Custom Item Meta you will set the original ID for 1st place, and you need
+# at least 3 more slots (All IDs must be 7 digits long)
+# ie: 1000001 = 1st gryffindor, 1000001 = 2nd gryffindor, 1000003 = 3rd gryffindor, 1000004 = 4th gryffindor,
+#     1000005 = 1st ravenclaw, 1000006 = 2nd ravenclaw ... etc
+# You only need to put the 1st place number, the rest will be done for you, this is the id that you put into the
+# resource pack json for the specific block type.
+# https://www.planetminecraft.com/forums/communities/texturing/new-1-14-custom-item-models-tuto-578834/
 Houses:
-  HouseName:
+  House:
     points: 0
-    block:
-      material: WOOL
-      color: RED
+    material: RED_WOOL
     chatColor: DARK_RED
     shortcut: g
-    
-# These are messages set up depending on varaible. You can edit them to any language you would like.
-# Variables will only be filled in when present. Otherwise they will fill with an empty string.
-# Here are the variables you can use in the string.
-# %player% = player who receives points
-# %points% = points given/taken
-# %reason% = reason
-# %house% = house
-# %hc% = house color
-# %giver% = person who altered the points
-# Also supports minecraft colors with & as the color variable.
-give:
-  houseOnly: "&e%giver%&r has rewarded %hc%%house%&r with &e%points%&r!"
-  playerNoReason: "&e%giver%&r has rewarded &e%player%&r %hc%%house%&r with &e%points%&r!"
-  playerWithReason: "&e%giver%&r has rewarded &e%player%&r %hc%%house%&r with &e%points%&r for %reason%!"
-  reasonOnly: "&e%giver%&r has rewarded %hc%%house%&r with &e%points%&r for %reason%!"
-take:
-  houseOnly: "&e%giver%&r has taken &e%points%&r from %hc%%house%&r!"
-  playerNoReason: "&e%giver%&r has taken &e%points%&r from &e%player%&r in %hc%%house%&r!"
-  playerWithReason: "&e%giver%&r has taken &e%points%&r from &e%player%&r in %hc%%house%&r for %reason%!"
-  reasonOnly: "&e%giver%&r has taken &e%points%&r from %hc%%house%&r for %reason%!"
+    custom-item:
+      rename: gryffindor-{rank}
+      id: 1000001
+
+# Use this for the customized item. Material is what material to set it as, and the no-points is for the id, and rename is for renaming. x, y, z, is how far to offset from the 0,0,0 of the block. .5 .5 on x and y will center them.
+custom-item:
+  material: STONE
+  no-points: 1000000
+  rename: no-points
+  x: .5
+  y: 0
+  z: .5
+# This section is a representation of all the strings used in the plugin, and will allow users to alter as they see fit,
+# messages, it will also allow them to hook in with the message ids to a custom language. The messageids are the path
+# except for messages. as it would be in a bukkit config.
+messages:
+  # Give/Take sections of messages have the ability to add variables, and you can rearrange them at will.
+  # Variables will only be filled in when present. Otherwise they will fill with an empty string.
+  # Here are the variables you can use in the string.
+  # {player} = player who receives points
+  # {points} = points given/taken
+  # {reason} = reason
+  # {house}= house
+  # {hc}= house color
+  # {giver}= person who altered the points
+  # Also supports minecraft colors with & as the color variable.
+  give:
+    houseOnly: "&e{giver}&r has rewarded {hc}{house}&r with &e{points}&r!"
+    playerNoReason: "&e{giver}&r has rewarded &e{player}&r {hc}{house}&r with &e{points}&r!"
+    playerWithReason: "&e{giver}&r has rewarded &e{player}&r {hc}{house}&r with &e{points}&r for {reason}!"
+    reasonOnly: "&e{giver}&r has rewarded {hc}{house}&r with &e{points}&r for {reason}!"
+  take:
+    houseOnly: "&e{giver}&r has taken &e{points}&r from {hc}{house}&r!"
+    playerNoReason: "&e{giver}&r has taken &e{points}&r from &e{player}&r in {hc}{house}&r!"
+    playerWithReason: "&e{giver}&r has taken &e{points}&r from &e{player}&r in {hc}{house}&r for {reason}!"
+    reasonOnly: "&e{giver}&r has taken &e{points}&r from {hc}{house}&r for {reason}!"
+  permission:
+    no_permission_command: "&cYou do not have permission to perform this command!"
+    no_permission_action: "&cYou do not have permission to do that!"
+  command:
+    syntax: "&7Correct House Points Syntax is /points [+/-] [house] [points] (player) (reason)"
+    not_house: "&cThat doesn't appear to be a house nor a shortcut for a house!"
+    event_cancelled: "&cYour event got cancelled by another plugin!"
+  listener:
+    wallsign: "&cOnly wall signs are supported."
   
 # This list can be as long as you like, add this in the instance that another 
 # language community would like to change the word for
@@ -112,6 +150,16 @@ StandingsTitle: "   [Current House Standings]"
 # If you would like a title before the message broadcast for house points.
 UseTitle: true
 
+# Block or Item_rename or Item_NBT. Block uses minecraft blocks to choose, and Item will place an item on an itemstand.
+pointType: Block
+# If points will be represented above the signs or not.
+# Turn this to false if you just want signs.
+pointRepresentation: true
+
+# If this is false, 0 points will not be represented as no blocks / ahve a 0 representation for items.
+# True to have 0 points have its own indicator.
+noPointsRepresentation: true
+
 # Title and color. Does not currently support colors, support may be added later.
 Title:
   title: [House Points]
@@ -121,7 +169,13 @@ Title:
 # also remove from this list, generally though leave this alone.
 Locations:
 ```
+The following interfaces can be implemented in another plugin to modify the way the plugin operates:
+LanguageHook
+PointData
+PointsPlayerData
 
+Examples for how to implement them are being used as the Default concrete class of each. To set them, get the
+JavaPlugin's instance and user the appropriate setter to set the interface to override the old interface.
 
 ## Sign
 Placing a wall sign with [<housename>] will create a sign for the house. Behind the sign blocks will move about depending on rank. Requires that you have the number of blocks above the sign block as there are houses.
