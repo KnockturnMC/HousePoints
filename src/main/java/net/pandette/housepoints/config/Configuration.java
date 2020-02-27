@@ -123,7 +123,7 @@ public class Configuration {
 
     public Material getCustomItemMaterial() {
         FileConfiguration config = PointsPlugin.getInstance().getConfig();
-        String mat = config.getString("custom-item.material", "STONE");
+        String mat = config.getString("custom-item.material", "DIRT");
         return Material.getMaterial(mat.toUpperCase().replace(" ", "_"));
     }
 
@@ -135,6 +135,19 @@ public class Configuration {
     public Integer getCustomItemNoPointsID() {
         FileConfiguration config = PointsPlugin.getInstance().getConfig();
         return config.getInt("custom-item.id");
+    }
+
+    public Double getCustomItemX() {
+        FileConfiguration config = PointsPlugin.getInstance().getConfig();
+        return config.getDouble("custom-item.x", .5);
+    }
+    public Double getCustomItemY() {
+        FileConfiguration config = PointsPlugin.getInstance().getConfig();
+        return config.getDouble("custom-item.y", 0);
+    }
+    public Double getCustomItemZ() {
+        FileConfiguration config = PointsPlugin.getInstance().getConfig();
+        return config.getDouble("custom-item.z", .5);
     }
 
     public ChatColor getTitleColor() {

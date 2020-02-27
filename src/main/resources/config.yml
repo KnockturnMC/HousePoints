@@ -72,6 +72,9 @@ custom-item:
   material: STONE
   no-points: 1000000
   rename: no-points
+  x: .5
+  y: 0
+  z: .5
 
 # This list can be as long as you like, add this in the instance that another
 # language community would like to change the word for adding or subtracting points.

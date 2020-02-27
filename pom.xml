@@ -4,7 +4,7 @@
 
     <groupId>com.knockturnmc</groupId>
     <artifactId>TheHousePoints</artifactId>
-    <version>3.0.3-SNAPSHOT</version>
+    <version>3.0.5-SNAPSHOT</version>
 
     <packaging>jar</packaging>
 
@@ -95,4 +95,13 @@
             </plugin>
         </plugins>
     </build>
+
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>knockturn-public</id>
+            <name>internal snapshots</name>
+            <url>https://repo.knockturnmc.com/content/repositories/knockturn-public/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

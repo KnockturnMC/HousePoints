@@ -53,7 +53,7 @@ import org.bukkit.persistence.PersistentDataType;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
 
 /**
  * This class runs the main commands hub allowing the points plugin to operate.
@@ -92,10 +92,11 @@ public class HousePointsCommand implements CommandExecutor {
 
     /**
      * Entry point for the command.
-     * @param sender Sender
+     *
+     * @param sender  Sender
      * @param command Command
-     * @param s String
-     * @param args Args
+     * @param s       String
+     * @param args    Args
      * @return Return if the command worked or not.
      */
     @Override
@@ -229,7 +230,8 @@ public class HousePointsCommand implements CommandExecutor {
 
     /**
      * This method reloads data that can be reloaded.
-     * @param sender Sender of the command
+     *
+     * @param sender       Sender of the command
      * @param languageHook Language Hook to allow an external language adaptor.
      * @param senderPlayer Sender player to allow for customizing language based on player.
      * @return Returns whether the command was successful or not.
@@ -249,7 +251,7 @@ public class HousePointsCommand implements CommandExecutor {
     /**
      * Sends the house standings to the players.
      *
-     * @param sender Command sender
+     * @param sender       Command sender
      * @param languageHook Language Hook to allow an external language adaptor.
      * @param senderPlayer Sender player to allow for customizing language based on player.
      * @return Returns whether the command was successful or not.
@@ -272,8 +274,8 @@ public class HousePointsCommand implements CommandExecutor {
     /**
      * This validates whether the event gets cancelled or not.
      *
-     * @param sender Command sender
-     * @param event House Points event
+     * @param sender       Command sender
+     * @param event        House Points event
      * @param languageHook Language Hook to allow an external language adaptor.
      * @param senderPlayer Sender player to allow for customizing language based on player.
      * @return Whether the event went through or was cancelled.
@@ -289,9 +291,10 @@ public class HousePointsCommand implements CommandExecutor {
 
     /**
      * This formats the message in preparation for broadcast.
+     *
      * @param message Message
-     * @param event House points event
-     * @param reason Reason for points change
+     * @param event   House points event
+     * @param reason  Reason for points change
      * @return Returns the message in a formatted form.
      */
     private static String formatMessage(String message, HousePointsEvent event, String reason) {
@@ -310,7 +313,7 @@ public class HousePointsCommand implements CommandExecutor {
      * This changes the house points sign. This will load the chunk first so the changes go through for blocks.
      *
      * @param house House to change for.
-     * @param loc Location to change
+     * @param loc   Location to change
      */
     private void changeHouseSign(House house, Location loc) {
         if (!Tag.WALL_SIGNS.isTagged(loc.getBlock().getType())) {
@@ -331,7 +334,8 @@ public class HousePointsCommand implements CommandExecutor {
             sign.update();
         }
 
-        List<House> positions = houseManager.getHousePositions();
+        Map<House, Integer> positions = PointsPlugin.getInstance().getPointData()
+                .getHouseRank(houseManager.getHouses());
 
         if (!configuration.isShowingPointsRepresentation()) return;
 
@@ -342,7 +346,7 @@ public class HousePointsCommand implements CommandExecutor {
         WallSign s = (WallSign) block.getState().getBlockData();
         BlockFace facing = s.getFacing();
         Block connected = block.getRelative(facing.getOppositeFace());
-        int position = positions.indexOf(houseType);
+        int position = positions.get(houseType);
 
         PointRepresentation representation = configuration.getRepresentationType();
 
@@ -359,35 +363,44 @@ public class HousePointsCommand implements CommandExecutor {
             }
             return;
         }
-        ItemStack stack = new ItemStack(configuration.getCustomItemMaterial());
-        ItemMeta meta = stack.getItemMeta();
-        if (meta == null) return;
 
+
+        setupArmorStand(positions, block, facing, representation, houseType);
+
+    }
+
+    private void setupArmorStand(Map<House, Integer> positions, Block block, BlockFace facing, PointRepresentation representation, House h) {
+        signManager.removeArmorstands(block.getLocation());
         Location above = block.getLocation().clone();
-        above.setY(above.getY() + 1);
-        above.setX(above.getX() + .5);
-        above.setZ(above.getZ() + .5);
-
+        above.setY(above.getY() + 1 + configuration.getCustomItemY());
+        above.setX(above.getX() + configuration.getCustomItemX());
+        above.setZ(above.getZ() + configuration.getCustomItemZ());
         above.setDirection(facing.getDirection());
         above.setPitch(0);
+
+        int hposition = positions.get(h);
+        ItemStack stack = new ItemStack(configuration.getCustomItemMaterial());
+
+        ItemMeta meta = stack.getItemMeta();
+        if (meta == null) return;
         ArmorStand e = above.getWorld().spawn(above, ArmorStand.class);
 
         PersistentDataContainer container = e.getPersistentDataContainer();
         container.set(PointsPlugin.getInstance().getNamespacedKey(), PersistentDataType.BYTE, (byte) 0);
 
         if (representation == PointRepresentation.ITEM_RENAME) {
-            String name = house.getCustomItemRename();
-            if (house.getPoints() == 0 && configuration.isShowingNoPoints()) {
+            String name = h.getCustomItemRename();
+            if (h.getPoints() == 0 && configuration.isShowingNoPoints()) {
                 name = configuration.getCustomNoPointsRename();
             } else {
-                name = name.replace("{rank}", String.valueOf(position));
+                name = name.replace("{rank}", String.valueOf(hposition + 1));
             }
             meta.setDisplayName(name);
         } else if (representation == PointRepresentation.ITEM_NBT) {
-            if (house.getPoints() == 0 && configuration.isShowingNoPoints()) {
+            if (h.getPoints() == 0 && configuration.isShowingNoPoints()) {
                 meta.setCustomModelData(configuration.getCustomItemNoPointsID());
             } else {
-                meta.setCustomModelData(house.getCustomItemID() + (position - 1));
+                meta.setCustomModelData(h.getCustomItemID() + hposition);
             }
         }
 
@@ -395,13 +408,15 @@ public class HousePointsCommand implements CommandExecutor {
         e.setHelmet(stack);
         e.setInvulnerable(true);
         e.setVisible(false);
+        e.setGravity(false);
     }
 
 
     /**
      * This sets the block with glass if we have a block change type.
+     *
      * @param connected The location its connected to.
-     * @param i - number to go up
+     * @param i         - number to go up
      */
     private void setBlock(Block connected, int i) {
         Location location = connected.getLocation();

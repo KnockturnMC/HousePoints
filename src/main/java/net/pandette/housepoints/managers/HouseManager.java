@@ -30,17 +30,6 @@ public class HouseManager {
         return houseMap.get(s.toLowerCase());
     }
 
-    public List<House> getHousePositions() {
-        List<House> houses = new ArrayList<>(houseMap.values());
-        houses.sort((a, b) -> {
-            int A = a.getPoints();
-            int B = b.getPoints();
-            return Integer.compare(B, A);
-        });
-
-        return houses;
-    }
-
     public void load() {
         configuration.loadKeys("Houses", (c, s) -> houseMap.put(s.toLowerCase(), configuration.getHouse(c, s)));
     }
