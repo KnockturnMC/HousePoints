@@ -134,6 +134,9 @@ pointRepresentation: true
 # True to have 0 points have its own indicator.
 noPointsRepresentation: true
 
+# If a call below requires async, you can turn this on to make the points command run in async.
+async: false
+
 consoleSender: The Gods Above
 MessageColor: light purple
 StandingsTitle: "   [Current House Standings]"

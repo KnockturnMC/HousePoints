@@ -101,6 +101,18 @@ public class HousePointsCommand implements CommandExecutor {
      */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
+
+        if (configuration.isAsync()) {
+            Bukkit.getScheduler().runTaskAsynchronously(PointsPlugin.getInstance(), () -> {
+                runCommand(sender, args);
+            });
+            return true;
+        }
+
+        return runCommand(sender, args);
+    }
+
+    private boolean runCommand(CommandSender sender, String[] args) {
         LanguageHook languageHook = PointsPlugin.getInstance().getLanguageHook();
         Player senderPlayer = null;
         if (sender instanceof Player) {
@@ -191,9 +203,12 @@ public class HousePointsCommand implements CommandExecutor {
 
         languageHook.broadCastMessage(finalMessage);
 
-        for (Location location : signManager.getLocations()) {
-            changeHouseSign(house, location);
-        }
+        House finalHouse = house;
+        Bukkit.getScheduler().runTask(PointsPlugin.getInstance(), () -> {
+            for (Location location : signManager.getLocations()) {
+                changeHouseSign(finalHouse, location);
+            }
+        });
 
         return true;
     }

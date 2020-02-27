@@ -101,6 +101,11 @@ public class Configuration {
                 section.getDouble(path + ".z"));
     }
 
+    public boolean isAsync() {
+        FileConfiguration config = PointsPlugin.getInstance().getConfig();
+        return config.getBoolean("async", false);
+    }
+
     public boolean isShowingPointsRepresentation() {
         FileConfiguration config = PointsPlugin.getInstance().getConfig();
         return config.getBoolean("pointRepresentation");
