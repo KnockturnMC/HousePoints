@@ -21,6 +21,7 @@
 package net.pandette.housepoints.listeners;
 
 import net.pandette.housepoints.PointsPlugin;
+import net.pandette.housepoints.config.HousePointsModifier;
 import net.pandette.housepoints.config.LanguageHook;
 import net.pandette.housepoints.config.Permission;
 import net.pandette.housepoints.dtos.House;
@@ -75,11 +76,11 @@ public class PointsListener implements Listener {
         }
 
         Location loc = event.getBlock().getLocation();
-
+        HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
         for (House house : houseManager.getHouses()) {
             if (ChatColor.stripColor(event.getLine(0)).equalsIgnoreCase("[" + house.getName() + "]")) {
                 sign.setLine(0, house.getChatColor() + house.getName());
-                sign.setLine(2, String.valueOf(house.getPoints()));
+                sign.setLine(2, String.valueOf(modifier.getPoints(house.getName().toUpperCase())));
                 sign.update();
                 event.setCancelled(true);
 
@@ -111,11 +112,13 @@ public class PointsListener implements Listener {
     /**
      * This is here, because if someone else calls a house points event it will automatically increment in the plugin's
      * representation as well.
+     *
      * @param event Event
      */
     @EventHandler
-    public void onHouseEventIncrement(HousePointsEvent event){
+    public void onHouseEventIncrement(HousePointsEvent event) {
+        HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
         House house = event.getHouse();
-        house.setPoints(house.getPoints() + event.getPoints());
+        modifier.addPoints(house.getName().toUpperCase(), event.getPoints());
     }
 }

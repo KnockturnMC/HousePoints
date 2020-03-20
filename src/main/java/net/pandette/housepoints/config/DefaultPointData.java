@@ -1,5 +1,6 @@
 package net.pandette.housepoints.config;
 
+import net.pandette.housepoints.PointsPlugin;
 import net.pandette.housepoints.dtos.House;
 
 import java.util.ArrayList;
@@ -12,10 +13,11 @@ public class DefaultPointData implements PointData {
 
     @Override
     public Map<House, Integer> getHouseRank(Collection<House> houses) {
+        HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
         List<House> houss = new ArrayList<>(houses);
         houss.sort((a, b) -> {
-            int A = a.getPoints();
-            int B = b.getPoints();
+            int A = modifier.getPoints(a.getName().toUpperCase());
+            int B = modifier.getPoints(b.getName().toUpperCase());
             return Integer.compare(B, A);
         });
 
