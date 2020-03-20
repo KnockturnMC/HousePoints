@@ -25,11 +25,13 @@ import lombok.Setter;
 import net.pandette.housepoints.config.DefaultLanguageHook;
 import net.pandette.housepoints.config.DefaultPointData;
 import net.pandette.housepoints.config.DefaultPointsPlayerData;
+import net.pandette.housepoints.config.HousePointsModifier;
 import net.pandette.housepoints.config.LanguageHook;
 import net.pandette.housepoints.config.PointData;
 import net.pandette.housepoints.config.PointsPlayerData;
 import net.pandette.housepoints.di.DaggerSingleComponent;
 import net.pandette.housepoints.di.SingleComponent;
+import net.pandette.housepoints.managers.HouseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -50,7 +52,15 @@ public class PointsPlugin extends JavaPlugin {
 
     @Getter
     @Setter
+    private HousePointsModifier housePointsModifier;
+
+    @Getter
+    @Setter
     private PointData pointData;
+
+    @Getter
+    @Setter
+    private HouseManager houseManager;
 
     @Getter
     @Setter
@@ -68,6 +78,8 @@ public class PointsPlugin extends JavaPlugin {
         languageHook = new DefaultLanguageHook(component.getConfiguration());
         pointsPlayerData = new DefaultPointsPlayerData();
         pointData = new DefaultPointData();
+        housePointsModifier = component.getDefaultModifier();
+        houseManager = component.getHouseManager();
 
         setInstance(this);
 

@@ -86,7 +86,8 @@ public class Configuration {
     }
 
     private void setHouse(House house, ConfigurationSection section, String path) {
-        section.set(path + ".points", house.getPoints());
+        HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
+        section.set(path + ".points", modifier.getPoints(house.getName().toUpperCase()));
     }
 
     private String getEnumString(ConfigurationSection section, String path) {

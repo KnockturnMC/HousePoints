@@ -22,6 +22,7 @@ package net.pandette.housepoints.commands;
 
 import net.pandette.housepoints.PointsPlugin;
 import net.pandette.housepoints.config.Configuration;
+import net.pandette.housepoints.config.HousePointsModifier;
 import net.pandette.housepoints.config.LanguageHook;
 import net.pandette.housepoints.config.Permission;
 import net.pandette.housepoints.config.PointRepresentation;
@@ -265,8 +266,9 @@ public class HousePointsCommand implements CommandExecutor {
 
         sender.sendMessage(configuration.getStandingsTitle());
         for (House house : houseManager.getHouses()) {
+            HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
             sender.sendMessage(house.getChatColor() + house.getName() + configuration.getTitleColor()
-                    + BREAK + house.getPoints());
+                    + BREAK + modifier.getPoints(house.getName().toUpperCase()));
         }
         return true;
     }
@@ -325,12 +327,12 @@ public class HousePointsCommand implements CommandExecutor {
         if (!chunk.isLoaded()) {
             chunk.load();
         }
-
+        HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
         Sign sign = (Sign) loc.getBlock().getState();
 
         if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(house.getName())) {
             sign.setLine(0, house.getChatColor() + house.getName());
-            sign.setLine(2, String.valueOf(house.getPoints()));
+            sign.setLine(2, String.valueOf(modifier.getPoints(house.getName().toUpperCase())));
             sign.update();
         }
 
@@ -356,7 +358,7 @@ public class HousePointsCommand implements CommandExecutor {
                 setBlock(connected, i);
             }
 
-            if (house.getPoints() == 0 && configuration.isShowingNoPoints()) return;
+            if (modifier.getPoints(house.getName().toUpperCase()) == 0 && configuration.isShowingNoPoints()) return;
 
             for (int i = 1; i < positions.size() + 1 - position; i++) {
                 setBlock(connected, houseType, i);
@@ -387,17 +389,17 @@ public class HousePointsCommand implements CommandExecutor {
 
         PersistentDataContainer container = e.getPersistentDataContainer();
         container.set(PointsPlugin.getInstance().getNamespacedKey(), PersistentDataType.BYTE, (byte) 0);
-
+        HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
         if (representation == PointRepresentation.ITEM_RENAME) {
             String name = h.getCustomItemRename();
-            if (h.getPoints() == 0 && configuration.isShowingNoPoints()) {
+            if (modifier.getPoints(h.getName().toUpperCase()) == 0 && configuration.isShowingNoPoints()) {
                 name = configuration.getCustomNoPointsRename();
             } else {
                 name = name.replace("{rank}", String.valueOf(hposition + 1));
             }
             meta.setDisplayName(name);
         } else if (representation == PointRepresentation.ITEM_NBT) {
-            if (h.getPoints() == 0 && configuration.isShowingNoPoints()) {
+            if (modifier.getPoints(h.getName().toUpperCase()) == 0 && configuration.isShowingNoPoints()) {
                 meta.setCustomModelData(configuration.getCustomItemNoPointsID());
             } else {
                 meta.setCustomModelData(h.getCustomItemID() + hposition);

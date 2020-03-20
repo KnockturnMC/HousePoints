@@ -3,6 +3,7 @@ package net.pandette.housepoints.di;
 import dagger.Component;
 import net.pandette.housepoints.config.Configuration;
 import net.pandette.housepoints.commands.HousePointsCommand;
+import net.pandette.housepoints.config.DefaultHousePointsModifier;
 import net.pandette.housepoints.listeners.PointsListener;
 import net.pandette.housepoints.managers.HouseManager;
 import net.pandette.housepoints.managers.SignManager;
@@ -22,5 +23,7 @@ public interface SingleComponent {
     SignManager getSignManager();
 
     PointsListener getPointsListener();
+
+    DefaultHousePointsModifier getDefaultModifier();
 
 }

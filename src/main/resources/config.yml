@@ -70,7 +70,7 @@ Houses:
 
 custom-item:
   material: STONE
-  no-points: 1000000
+  id: 1000000
   rename: no-points
   x: .5
   y: 0
