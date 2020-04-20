@@ -4,7 +4,7 @@
 
 ## Dependencies
 
-Spigot 1.12
+Spigot 1.14, 1.15
 
 Java 8
 
