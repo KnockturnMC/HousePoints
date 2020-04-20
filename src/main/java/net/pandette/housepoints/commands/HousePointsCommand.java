@@ -33,7 +33,6 @@ import net.pandette.housepoints.managers.SignManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -338,10 +337,13 @@ public class HousePointsCommand implements CommandExecutor {
             return;
         }
 
-        Chunk chunk = loc.getChunk();
-        if (!chunk.isLoaded()) {
-            chunk.load();
+        int cx = loc.getBlockX() / 16;
+        int cz = loc.getBlockZ() / 16;
+        boolean wasLoaded = loc.getWorld().isChunkLoaded(cx, cz);
+        if (!wasLoaded) {
+            loc.getWorld().loadChunk(cx, cz);
         }
+
         HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
         Sign sign = (Sign) loc.getBlock().getState();
 
@@ -383,6 +385,9 @@ public class HousePointsCommand implements CommandExecutor {
 
 
         setupArmorStand(positions, block, facing, representation, houseType);
+        if (!wasLoaded) {
+            loc.getWorld().unloadChunkRequest(cx, cz);
+        }
 
     }
 
