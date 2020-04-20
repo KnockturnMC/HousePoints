@@ -69,16 +69,16 @@ public class PointsListener implements Listener {
 
         Sign sign = (Sign) event.getBlock().getState();
 
-        if (!Tag.WALL_SIGNS.isTagged(event.getBlock().getType())) {
-            event.getPlayer().sendMessage(languageHook.getMessage("listener.wallsign", player,
-                    DEFAULT_WALL_SIGN));
-            return;
-        }
-
         Location loc = event.getBlock().getLocation();
         HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
         for (House house : houseManager.getHouses()) {
             if (ChatColor.stripColor(event.getLine(0)).equalsIgnoreCase("[" + house.getName() + "]")) {
+                if (!Tag.WALL_SIGNS.isTagged(event.getBlock().getType())) {
+                    event.getPlayer().sendMessage(languageHook.getMessage("listener.wallsign", player,
+                            DEFAULT_WALL_SIGN));
+                    return;
+                }
+
                 sign.setLine(0, house.getChatColor() + house.getName());
                 sign.setLine(2, String.valueOf(modifier.getPoints(house.getName().toUpperCase())));
                 sign.update();
