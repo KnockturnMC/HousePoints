@@ -393,6 +393,7 @@ public class HousePointsCommand implements CommandExecutor {
 
     private void setupArmorStand(Map<House, Integer> positions, Block block, BlockFace facing, PointRepresentation representation, House h) {
         signManager.removeArmorstands(block.getLocation());
+
         Location above = block.getLocation().clone();
         above.setY(above.getY() + 1 + configuration.getCustomItemY());
         above.setX(above.getX() + configuration.getCustomItemX());

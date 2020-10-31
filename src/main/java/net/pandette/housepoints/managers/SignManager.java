@@ -36,18 +36,25 @@ public class SignManager {
     }
 
     public void removeArmorstands(Location location) {
-        if (configuration.getRepresentationType() == PointRepresentation.ITEM_RENAME ||
-                configuration.getRepresentationType() == PointRepresentation.ITEM_NBT) {
-            Location above = location.getBlock().getLocation().clone();
-            above.setY(above.getY() + 1);
-            for (Entity e : above.getWorld().getEntitiesByClass(ArmorStand.class)) {
-                if (!e.getLocation().getBlock().getLocation().equals(above)) continue;
-                PersistentDataContainer container = e.getPersistentDataContainer();
-                boolean exists = container.has(PointsPlugin.getInstance().getNamespacedKey(), PersistentDataType.BYTE);
-                if (!exists) continue;
-                e.remove();
-            }
+        if (configuration.getRepresentationType() != PointRepresentation.ITEM_NBT
+                && configuration.getRepresentationType() != PointRepresentation.ITEM_RENAME) return;
+
+        Location above = location.getBlock().getLocation().clone();
+
+        System.out.println(above.toString());
+
+        above.setY(above.getY() + 1);
+        for (Entity e : above.getWorld().getEntitiesByClass(ArmorStand.class)) {
+            System.out.println(e.getLocation().toString());
+            if (!e.getLocation().getBlock().getLocation().equals(above)) continue;
+            PersistentDataContainer container = e.getPersistentDataContainer();
+            boolean exists = container.has(PointsPlugin.getInstance().getNamespacedKey(), PersistentDataType.BYTE);
+            System.out.println(exists);
+            if (!exists) continue;
+            System.out.println("REMOVE!");
+            e.remove();
         }
+
     }
 
     public void addLocation(Location location) {
