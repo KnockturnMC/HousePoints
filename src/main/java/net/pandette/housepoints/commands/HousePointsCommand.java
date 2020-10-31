@@ -341,6 +341,7 @@ public class HousePointsCommand implements CommandExecutor {
         int cz = loc.getBlockZ() / 16;
         boolean wasLoaded = loc.getWorld().isChunkLoaded(cx, cz);
         if (!wasLoaded) {
+            loc.getWorld().setChunkForceLoaded(cx, cz, true);
             loc.getWorld().loadChunk(cx, cz);
         }
 
@@ -386,20 +387,21 @@ public class HousePointsCommand implements CommandExecutor {
 
         setupArmorStand(positions, block, facing, representation, houseType);
         if (!wasLoaded) {
+            loc.getWorld().setChunkForceLoaded(cx, cz, false);
             loc.getWorld().unloadChunkRequest(cx, cz);
         }
 
     }
 
     private void setupArmorStand(Map<House, Integer> positions, Block block, BlockFace facing, PointRepresentation representation, House h) {
-        signManager.removeArmorstands(block.getLocation());
-
         Location above = block.getLocation().clone();
         above.setY(above.getY() + 1 + configuration.getCustomItemY());
         above.setX(above.getX() + configuration.getCustomItemX());
         above.setZ(above.getZ() + configuration.getCustomItemZ());
         above.setDirection(facing.getDirection());
         above.setPitch(0);
+
+        signManager.removeArmorstands(above);
 
         int hposition = positions.get(h);
         ItemStack stack = new ItemStack(configuration.getCustomItemMaterial());

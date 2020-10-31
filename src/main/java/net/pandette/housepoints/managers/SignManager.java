@@ -39,13 +39,9 @@ public class SignManager {
         if (configuration.getRepresentationType() != PointRepresentation.ITEM_NBT
                 && configuration.getRepresentationType() != PointRepresentation.ITEM_RENAME) return;
 
-        Location above = location.getBlock().getLocation().clone();
-
-        System.out.println(above.toString());
-
-        above.setY(above.getY() + 1);
+        Location above = location.clone();
+        
         for (Entity e : above.getWorld().getEntitiesByClass(ArmorStand.class)) {
-            System.out.println(e.getLocation().toString());
             if (!e.getLocation().getBlock().getLocation().equals(above)) continue;
             PersistentDataContainer container = e.getPersistentDataContainer();
             boolean exists = container.has(PointsPlugin.getInstance().getNamespacedKey(), PersistentDataType.BYTE);
