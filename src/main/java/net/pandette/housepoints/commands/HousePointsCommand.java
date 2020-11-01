@@ -205,8 +205,6 @@ public class HousePointsCommand implements CommandExecutor {
 
         House finalHouse = house;
         Bukkit.getScheduler().runTask(PointsPlugin.getInstance(), () -> {
-            signManager.removeArmorstands();
-
             for (Location location : signManager.getLocations()) {
                 changeHouseSign(finalHouse, location);
             }
@@ -402,6 +400,7 @@ public class HousePointsCommand implements CommandExecutor {
         above.setZ(above.getZ() + configuration.getCustomItemZ());
         above.setDirection(facing.getDirection());
         above.setPitch(0);
+        signManager.removeArmorstands(above);
 
         int hposition = positions.get(h);
         ItemStack stack = new ItemStack(configuration.getCustomItemMaterial());
