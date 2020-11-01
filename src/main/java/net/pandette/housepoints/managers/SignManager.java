@@ -45,9 +45,7 @@ public class SignManager {
             if (!e.getLocation().getBlock().getLocation().equals(above)) continue;
             PersistentDataContainer container = e.getPersistentDataContainer();
             boolean exists = container.has(PointsPlugin.getInstance().getNamespacedKey(), PersistentDataType.BYTE);
-            System.out.println(exists);
             if (!exists) continue;
-            System.out.println("REMOVE!");
             e.remove();
         }
 
