@@ -5,3 +5,5 @@ target/
 .idea/
 TheHousePoints.iml
 dependency-reduced-pom.xml
+.gradle/
+build/
