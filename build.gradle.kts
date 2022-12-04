@@ -1,10 +1,11 @@
 plugins {
     java
+    `maven-publish`
 }
 
-
 apply(plugin = "java")
-version = "4.0.0"
+group="com.knockturnmc"
+version = "4.0.0-SNAPSHOT"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
@@ -39,5 +40,20 @@ dependencies {
     implementation("com.google.dagger:dagger:2.39.1")
     annotationProcessor("com.google.dagger:dagger-compiler:2.39.1")
 
+}
+
+publishing {
+    repositories {
+        maven("https://repo.knockturnmc.com/content/repositories/knockturn-public/") {
+            name="knockturnPublic"
+            credentials(PasswordCredentials::class)
+        }
+    }
+
+    publications.create<MavenPublication>("maven") {
+        artifactId = "housepoints"
+        from(components["java"])
+
+    }
 }
 
