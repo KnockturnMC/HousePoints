@@ -3,7 +3,7 @@ version: 4.0.0
 author: iarepandemonium
 description: A plugin for house points.
 main: net.pandette.housepoints.PointsPlugin
-api-version: 1.19
+api-version: 1.17
 commands:
   points:
     description: add/remove points
