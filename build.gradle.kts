@@ -1,11 +1,13 @@
 plugins {
     java
     `maven-publish`
+    id("com.github.johnrengelman.shadow") version "7.1.0"
 }
 
 apply(plugin = "java")
 group="com.knockturnmc"
 version = "4.0.0-SNAPSHOT"
+tasks.shadowJar { archiveClassifier.set("final"); mergeServiceFiles() }
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
