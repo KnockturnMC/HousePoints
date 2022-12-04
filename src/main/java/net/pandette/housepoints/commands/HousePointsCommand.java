@@ -30,7 +30,7 @@ import net.pandette.housepoints.dtos.House;
 import net.pandette.housepoints.events.HousePointsEvent;
 import net.pandette.housepoints.managers.HouseManager;
 import net.pandette.housepoints.managers.SignManager;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -103,9 +103,7 @@ public class HousePointsCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
 
         if (configuration.isAsync()) {
-            Bukkit.getScheduler().runTaskAsynchronously(PointsPlugin.getInstance(), () -> {
-                runCommand(sender, args);
-            });
+            Bukkit.getScheduler().runTaskAsynchronously(PointsPlugin.getInstance(), () -> runCommand(sender, args));
             return true;
         }
 
