@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
     // Plugin dependencies
-    compileOnly("org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.19.1-R0.1-SNAPSHOT")
 
     //Lombok
     compileOnly("org.projectlombok:lombok:1.18.20")
@@ -39,6 +39,9 @@ dependencies {
     //Dagger
     implementation("com.google.dagger:dagger:2.39.1")
     annotationProcessor("com.google.dagger:dagger-compiler:2.39.1")
+
+    implementation("org.apache.commons:commons-text:1.10.0")
+
 
 }
 
