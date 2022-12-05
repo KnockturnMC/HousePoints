@@ -2,8 +2,11 @@ name: HousePoints
 version: 4.0.0
 author: iarepandemonium
 description: A plugin for house points.
+softdepend:
+  - Multiverse-Core
 main: net.pandette.housepoints.PointsPlugin
 api-version: 1.17
+load: POSTWORLD
 commands:
   points:
     description: add/remove points
