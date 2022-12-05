@@ -96,7 +96,12 @@ public class Configuration {
 
 
     public Location getLocation(ConfigurationSection section, String path) {
-        return new Location(Bukkit.getWorld(section.getString(path + ".world")),
+        String world = section.getString(path + ".world");
+        if (world == null) {
+            return null;
+        }
+
+        return new Location(Bukkit.getWorld(world),
                 section.getDouble(path + ".x"),
                 section.getDouble(path + ".y"),
                 section.getDouble(path + ".z"));

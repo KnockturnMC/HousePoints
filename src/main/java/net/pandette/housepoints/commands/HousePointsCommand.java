@@ -54,6 +54,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * This class runs the main commands hub allowing the points plugin to operate.
@@ -334,6 +335,7 @@ public class HousePointsCommand implements CommandExecutor {
             signManager.removeLocation(loc);
             return;
         }
+
 
         int cx = loc.getBlockX() / 16;
         int cz = loc.getBlockZ() / 16;
