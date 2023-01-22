@@ -15,7 +15,7 @@ java {
 
 tasks.withType(Javadoc::class) {
     options.encoding = Charsets.UTF_8.name()
-    (options as StandardJavadocDocletOptions).links("https://lynxplay.dev/ktp/1.17.1-R0.1-SNAPSHOT/")
+    (options as StandardJavadocDocletOptions).links("https://lynxplay.dev/ktp/1.19.3-R0.1-SNAPSHOT/")
 }
 
 tasks.withType(ProcessResources::class) {
@@ -30,13 +30,13 @@ repositories {
 
 dependencies {
     // Plugin dependencies
-    compileOnly("org.spigotmc:spigot-api:1.19.1-R0.1-SNAPSHOT")
+    compileOnly("dev.lynxplay.ktp:ktp-api:1.19.3-R0.1-SNAPSHOT")
 
     //Lombok
-    compileOnly("org.projectlombok:lombok:1.18.20")
-    annotationProcessor("org.projectlombok:lombok:1.18.20")
-    testCompileOnly("org.projectlombok:lombok:1.18.20")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.20")
+    compileOnly("org.projectlombok:lombok:1.18.24")
+    annotationProcessor("org.projectlombok:lombok:1.18.24")
+    testCompileOnly("org.projectlombok:lombok:1.18.24")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.24")
 
     //Dagger
     implementation("com.google.dagger:dagger:2.39.1")
