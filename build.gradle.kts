@@ -15,9 +15,8 @@ java {
 
 tasks.withType(Javadoc::class) {
     options.encoding = Charsets.UTF_8.name()
-    (options as StandardJavadocDocletOptions).links("https://lynxplay.dev/ktp/1.19.3-R0.1-SNAPSHOT/")
+    (options as StandardJavadocDocletOptions).links("https://lynxplay.dev/ktp/1.19.4-R0.1-SNAPSHOT/")
 }
-
 tasks.withType(ProcessResources::class) {
     filteringCharset = Charsets.UTF_8.name()
 }
@@ -26,11 +25,14 @@ repositories {
     maven { url = uri("https://hub.spigotmc.org/nexus/content/groups/public/") }
     mavenCentral()
     mavenLocal()
+    maven("https://repo.knockturnmc.com/content/repositories/knockturn-public/") {
+        name = "knockturnPublic"
+    }
 }
 
 dependencies {
     // Plugin dependencies
-    compileOnly("dev.lynxplay.ktp:ktp-api:1.19.3-R0.1-SNAPSHOT")
+    compileOnly("dev.lynxplay.ktp:ktp-api:1.19.4-R0.1-SNAPSHOT")
 
     //Lombok
     compileOnly("org.projectlombok:lombok:1.18.24")
