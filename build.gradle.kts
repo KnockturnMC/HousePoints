@@ -1,16 +1,18 @@
+group = "com.knockturnmc"
+version = "4.0.0-SNAPSHOT"
+tasks.shadowJar { archiveClassifier = "final"; mergeServiceFiles() }
+tasks.build { dependsOn(tasks.shadowJar) }
+
 plugins {
     java
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "7.1.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.freefair.lombok") version "8.4"
 }
 
-apply(plugin = "java")
-group="com.knockturnmc"
-version = "4.0.0-SNAPSHOT"
-tasks.shadowJar { archiveClassifier.set("final"); mergeServiceFiles() }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
 tasks.withType(Javadoc::class) {
@@ -22,37 +24,26 @@ tasks.withType(ProcessResources::class) {
 }
 
 repositories {
-    maven { url = uri("https://hub.spigotmc.org/nexus/content/groups/public/") }
+    maven("https://repo.papermc.io/repository/maven-public/")
     mavenCentral()
     mavenLocal()
-    maven("https://repo.knockturnmc.com/content/repositories/knockturn-public/") {
-        name = "knockturnPublic"
-    }
 }
 
 dependencies {
     // Plugin dependencies
-    compileOnly("dev.lynxplay.ktp:ktp-api:1.19.4-R0.1-SNAPSHOT")
-
-    //Lombok
-    compileOnly("org.projectlombok:lombok:1.18.24")
-    annotationProcessor("org.projectlombok:lombok:1.18.24")
-    testCompileOnly("org.projectlombok:lombok:1.18.24")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.24")
+    compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
 
     //Dagger
-    implementation("com.google.dagger:dagger:2.39.1")
-    annotationProcessor("com.google.dagger:dagger-compiler:2.39.1")
+    implementation("com.google.dagger:dagger:2.50")
+    annotationProcessor("com.google.dagger:dagger-compiler:2.50")
 
-    implementation("org.apache.commons:commons-text:1.10.0")
-
-
+    implementation("org.apache.commons:commons-text:1.11.0")
 }
 
 publishing {
     repositories {
-        maven("https://repo.knockturnmc.com/content/repositories/knockturn-public/") {
-            name="knockturnPublic"
+        maven("https://repo.knockturnmc.com/content/repositories/knockturn-public-release/") {
+            name = "knockturnPublic"
             credentials(PasswordCredentials::class)
         }
     }
@@ -60,7 +51,6 @@ publishing {
     publications.create<MavenPublication>("maven") {
         artifactId = "housepoints"
         from(components["java"])
-
     }
 }
 
