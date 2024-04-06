@@ -21,28 +21,30 @@
 package net.pandette.housepoints.events;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.pandette.housepoints.dtos.House;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+@EqualsAndHashCode(callSuper = false)
 @Data
-public class HousePointsEvent extends Event implements Cancellable{
+public class HousePointsEvent extends Event implements Cancellable {
 
-	private static HandlerList handlers = new HandlerList();
-	private final House house;
-	private final int points;
-	private final String giver;
-	private final String receiver;
-	private boolean cancelled;
+    private static HandlerList handlers = new HandlerList();
+    private final House house;
+    private final int points;
+    private final String giver;
+    private final String receiver;
+    private boolean cancelled;
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
 }
