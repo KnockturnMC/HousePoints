@@ -10,15 +10,15 @@ plugins {
     id("io.freefair.lombok") version "8.4"
 }
 
+apply(plugin = "java")
+group="com.knockturnmc"
+version = "5.0.0-SNAPSHOT"
+tasks.shadowJar { archiveClassifier.set("final"); mergeServiceFiles() }
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
-tasks.withType(Javadoc::class) {
-    options.encoding = Charsets.UTF_8.name()
-    (options as StandardJavadocDocletOptions).links("https://lynxplay.dev/ktp/1.19.4-R0.1-SNAPSHOT/")
-}
 tasks.withType(ProcessResources::class) {
     filteringCharset = Charsets.UTF_8.name()
 }
@@ -27,11 +27,21 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     mavenCentral()
     mavenLocal()
+    maven("https://repo.knockturnmc.com/content/repositories/knockturn-public/") {
+        name = "knockturnPublic"
+    }
 }
 
 dependencies {
     // Plugin dependencies
-    compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+
+    //Lombok
+    compileOnly("org.projectlombok:lombok:1.18.24")
+    annotationProcessor("org.projectlombok:lombok:1.18.24")
+    testCompileOnly("org.projectlombok:lombok:1.18.24")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.24")
+
 
     //Dagger
     implementation("com.google.dagger:dagger:2.50")

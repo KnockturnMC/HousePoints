@@ -29,14 +29,13 @@ import javax.inject.Singleton;
 @Value
 public class Permission {
 
-
-    private final String housePoints = "PointsPlugin.";
-    private final String see = housePoints + "see";
-    private final String give = housePoints + "give";
-    private final String take = housePoints + "take";
-    private final String sign = housePoints + "create.sign";
-    private final String deleteSign = housePoints + "delete.sign";
-    private final String reload = housePoints + "reload";
+    String housePoints = "PointsPlugin.";
+    String see = housePoints + "see";
+    String give = housePoints + "give";
+    String take = housePoints + "take";
+    String sign = housePoints + "create.sign";
+    String deleteSign = housePoints + "delete.sign";
+    String reload = housePoints + "reload";
 
     @Inject
     Permission(){}

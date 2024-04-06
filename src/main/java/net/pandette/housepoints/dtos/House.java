@@ -23,7 +23,7 @@ package net.pandette.housepoints.dtos;
 import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.NonFinal;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
 
 @Value
@@ -31,12 +31,12 @@ public class House {
 
     @NonFinal
     @Setter
-    private int points;
-    private final String name;
-    private final Material material;
-    private final ChatColor chatColor;
-    private final String shortcut;
-    private final String customItemRename;
-    private final Integer customItemID;
+    int points;
+    String name;
+    Material material;
+    TextColor textColor;
+    String shortcut;
+    String customItemRename;
+    Integer customItemID;
 
 }

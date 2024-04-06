@@ -1,8 +1,9 @@
 package net.pandette.housepoints.config;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
 
 public class DefaultLanguageHook implements LanguageHook {
 
@@ -20,12 +21,12 @@ public class DefaultLanguageHook implements LanguageHook {
             translate = "";
         }
 
-        return ChatColor.translateAlternateColorCodes('&', configuration.getLanguageMessage(messageId, translate));
+        return configuration.getLanguageMessage(messageId, translate);
     }
 
     @Override
-    public void broadCastMessage(String message) {
-        Bukkit.broadcastMessage(message);
+    public void broadCastMessage(Component message) {
+        Bukkit.broadcast(message);
     }
 
 }
