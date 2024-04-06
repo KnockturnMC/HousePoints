@@ -103,26 +103,26 @@ messages:
   # {house}= house
   # {hc}= house color
   # {giver}= person who altered the points
-  # Also supports minecraft colors with & as the color variable.
+  # use minimessage colors such as <dark_red> or <white>
   give:
-    houseOnly: "&e{giver}&r has rewarded {hc}{house}&r with &e{points}&r!"
-    playerNoReason: "&e{giver}&r has rewarded &e{player}&r {hc}{house}&r with &e{points}&r!"
-    playerWithReason: "&e{giver}&r has rewarded &e{player}&r {hc}{house}&r with &e{points}&r for {reason}!"
-    reasonOnly: "&e{giver}&r has rewarded {hc}{house}&r with &e{points}&r for {reason}!"
+    houseOnly: "<yellow>{giver}<white> has rewarded {hc}{house}<white> with <yellow>{points}<white>!"
+    playerNoReason: "<yellow>{giver}<white> has rewarded <yellow>{player}<white> {hc}{house}<white> with <yellow>{points}<white>!"
+    playerWithReason: "<yellow>{giver}<white> has rewarded <yellow>{player}<white> {hc}{house}<white> with <yellow>{points}<white> for {reason}!"
+    reasonOnly: "<yellow>{giver}<white> has rewarded {hc}{house}<white> with <yellow>{points}<white> for {reason}!"
   take:
-    houseOnly: "&e{giver}&r has taken &e{points}&r from {hc}{house}&r!"
-    playerNoReason: "&e{giver}&r has taken &e{points}&r from &e{player}&r in {hc}{house}&r!"
-    playerWithReason: "&e{giver}&r has taken &e{points}&r from &e{player}&r in {hc}{house}&r for {reason}!"
-    reasonOnly: "&e{giver}&r has taken &e{points}&r from {hc}{house}&r for {reason}!"
+    houseOnly: "<yellow>{giver}<white> has taken <yellow>{points}<white> from {hc}{house}<white>!"
+    playerNoReason: "<yellow>{giver}<white> has taken <yellow>{points}<white> from <yellow>{player}<white> in {hc}{house}<white>!"
+    playerWithReason: "<yellow>{giver}<white> has taken <yellow>{points}<white> from <yellow>{player}<white> in {hc}{house}<white> for {reason}!"
+    reasonOnly: "<yellow>{giver}<white> has taken <yellow>{points}<white> from {hc}{house}<white> for {reason}!"
   permission:
-    no_permission_command: "&cYou do not have permission to perform this command!"
-    no_permission_action: "&cYou do not have permission to do that!"
+    no_permission_command: "<red>You do not have permission to perform this command!"
+    no_permission_action: "<red>You do not have permission to do that!"
   command:
-    syntax: "&7Correct House Points Syntax is /points [+/-] [house] [points] (player) (reason)"
-    not_house: "&cThat doesn't appear to be a house nor a shortcut for a house!"
-    event_cancelled: "&cYour event got cancelled by another plugin!"
+    syntax: "<gray>Correct House Points Syntax is /points [+/-] [house] [points] (player) (reason)"
+    not_house: "<red>That doesn't appear to be a house nor a shortcut for a house!"
+    event_cancelled: "<red>Your event got cancelled by another plugin!"
   listener:
-    wallsign: "&cOnly wall signs are supported."
+    wallsign: "<red>Only wall signs are supported."
 
 # Block or Item_rename or Item_NBT. Block uses minecraft blocks to choose, and Item will place an item on an itemstand.
 pointType: Block

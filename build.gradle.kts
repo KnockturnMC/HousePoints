@@ -6,17 +6,18 @@ plugins {
 
 apply(plugin = "java")
 group="com.knockturnmc"
-version = "4.0.0-SNAPSHOT"
+version = "5.0.0-SNAPSHOT"
 tasks.shadowJar { archiveClassifier.set("final"); mergeServiceFiles() }
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
+//
+//tasks.withType(Javadoc::class) {
+//    options.encoding = Charsets.UTF_8.name()
+//    (options as StandardJavadocDocletOptions).links("https://jd.papermc.io/paper/1.20/")
+//}
 
-tasks.withType(Javadoc::class) {
-    options.encoding = Charsets.UTF_8.name()
-    (options as StandardJavadocDocletOptions).links("https://lynxplay.dev/ktp/1.19.4-R0.1-SNAPSHOT/")
-}
 tasks.withType(ProcessResources::class) {
     filteringCharset = Charsets.UTF_8.name()
 }
@@ -32,7 +33,7 @@ repositories {
 
 dependencies {
     // Plugin dependencies
-    compileOnly("dev.lynxplay.ktp:ktp-api:1.19.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 
     //Lombok
     compileOnly("org.projectlombok:lombok:1.18.24")
