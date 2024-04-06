@@ -1,5 +1,6 @@
 package net.pandette.housepoints.config;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 public interface LanguageHook {
@@ -15,6 +16,6 @@ public interface LanguageHook {
      * Performs a broadcast message which can be adapted in other plugins.
      * @param message Message to broadcast
      */
-    void broadCastMessage(String message);
+    void broadCastMessage(Component message);
 
 }

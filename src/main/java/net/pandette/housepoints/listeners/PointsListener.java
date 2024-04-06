@@ -20,6 +20,10 @@
  */
 package net.pandette.housepoints.listeners;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.pandette.housepoints.PointsPlugin;
 import net.pandette.housepoints.config.HousePointsModifier;
 import net.pandette.housepoints.config.LanguageHook;
@@ -28,16 +32,17 @@ import net.pandette.housepoints.dtos.House;
 import net.pandette.housepoints.events.HousePointsEvent;
 import net.pandette.housepoints.managers.HouseManager;
 import net.pandette.housepoints.managers.SignManager;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Tag;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -68,22 +73,23 @@ public class PointsListener implements Listener {
         if (!player.hasPermission(permission.getSign())) return;
 
         Sign sign = (Sign) event.getBlock().getState();
+        Component line = event.line(0);
+        if (line == null) return;
 
-        Location loc = event.getBlock().getLocation();
+        @NotNull String linePlainText = LegacyComponentSerializer.legacyAmpersand().serialize(line);
+
+        Location loc = sign.getLocation();
         HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
         for (House house : houseManager.getHouses()) {
-            if (ChatColor.stripColor(event.getLine(0)).equalsIgnoreCase("[" + house.getName() + "]")) {
+            if (linePlainText.equalsIgnoreCase("[" + house.getName() + "]")) {
                 if (!Tag.WALL_SIGNS.isTagged(event.getBlock().getType())) {
-                    event.getPlayer().sendMessage(languageHook.getMessage("listener.wallsign", player,
-                            DEFAULT_WALL_SIGN));
+                    event.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("listener.wallsign", player,
+                            DEFAULT_WALL_SIGN)));
                     return;
                 }
 
-                sign.setLine(0, house.getChatColor() + house.getName());
-                sign.setLine(2, String.valueOf(modifier.getPoints(house.getName().toUpperCase())));
-                sign.update();
-                event.setCancelled(true);
-
+                event.line(0, Component.text(house.getName(), house.getTextColor()));
+                event.line(2, Component.text(modifier.getPoints(house.getName().toUpperCase())));
                 signManager.addLocation(loc);
                 return;
             }
@@ -104,8 +110,8 @@ public class PointsListener implements Listener {
             return;
         }
 
-        player.sendMessage(languageHook.getMessage("permission.no_permission_action", player,
-                DEFAULT_NO_PERMISSION_ACTION));
+        player.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("permission.no_permission_action", player,
+                DEFAULT_NO_PERMISSION_ACTION)));
         event.setCancelled(true);
     }
 

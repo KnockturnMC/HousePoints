@@ -20,6 +20,10 @@
  */
 package net.pandette.housepoints.commands;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.pandette.housepoints.PointsPlugin;
 import net.pandette.housepoints.config.Configuration;
 import net.pandette.housepoints.config.HousePointsModifier;
@@ -40,6 +44,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -49,12 +55,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.logging.Level;
 
 /**
  * This class runs the main commands hub allowing the points plugin to operate.
@@ -127,7 +133,7 @@ public class HousePointsCommand implements CommandExecutor {
         }
 
         if (args.length < 3) {
-            sender.sendMessage(languageHook.getMessage("command.syntax", senderPlayer, DEFAULT_SYNTAX));
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("command.syntax", senderPlayer, DEFAULT_SYNTAX)));
             return false;
         }
 
@@ -145,7 +151,7 @@ public class HousePointsCommand implements CommandExecutor {
         }
 
         if (house == null) {
-            sender.sendMessage(languageHook.getMessage("command.not_house", senderPlayer, DEFAULT_NOT_A_HOUSE));
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("command.not_house", senderPlayer, DEFAULT_NOT_A_HOUSE)));
             return false;
         }
 
@@ -153,7 +159,7 @@ public class HousePointsCommand implements CommandExecutor {
         try {
             points = Integer.parseInt(args[2]);
         } catch (Exception e) {
-            sender.sendMessage(languageHook.getMessage("command.syntax", senderPlayer, DEFAULT_SYNTAX));
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("command.syntax", senderPlayer, DEFAULT_SYNTAX)));
             return false;
         }
 
@@ -174,8 +180,8 @@ public class HousePointsCommand implements CommandExecutor {
         final HousePointsEvent event;
         if (configuration.getPositive().contains(args[0].toLowerCase())) {
             if (!sender.hasPermission(permission.getGive()) && !sender.hasPermission(permission.getGive() + "." + house.getName().toUpperCase())) {
-                sender.sendMessage(languageHook.getMessage("permission.no_permission_command", senderPlayer,
-                        DEFAULT_NO_PERMISSION));
+                sender.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("permission.no_permission_command", senderPlayer,
+                        DEFAULT_NO_PERMISSION)));
                 return false;
             }
 
@@ -184,8 +190,8 @@ public class HousePointsCommand implements CommandExecutor {
             path = "give";
         } else if (configuration.getNegative().contains(args[0].toLowerCase())) {
             if (!sender.hasPermission(permission.getTake()) && !sender.hasPermission(permission.getTake() + "." + house.getName().toUpperCase())) {
-                sender.sendMessage(languageHook.getMessage("permission.no_permission_command", senderPlayer,
-                        DEFAULT_NO_PERMISSION));
+                sender.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("permission.no_permission_command", senderPlayer,
+                        DEFAULT_NO_PERMISSION)));
                 return false;
             }
 
@@ -193,14 +199,15 @@ public class HousePointsCommand implements CommandExecutor {
             if (validateEvent(sender, event, languageHook, senderPlayer)) return false;
             path = "take";
         } else {
-            sender.sendMessage(languageHook.getMessage("command.syntax", senderPlayer, DEFAULT_SYNTAX));
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("command.syntax", senderPlayer, DEFAULT_SYNTAX)));
             return false;
         }
 
 
         String finalMessage = getMessage(args, languageHook, senderPlayer, path, playerName, event);
+        @NotNull Component component = MiniMessage.miniMessage().deserialize(finalMessage);
 
-        languageHook.broadCastMessage(finalMessage);
+        languageHook.broadCastMessage(component);
 
         House finalHouse = house;
         Bukkit.getScheduler().runTask(PointsPlugin.getInstance(), () -> {
@@ -220,21 +227,21 @@ public class HousePointsCommand implements CommandExecutor {
         String reason = "";
         if (args.length == 3) {
             message = languageHook.getMessage(path + ".houseOnly", senderPlayer,
-                    "&e{giver}&r : {hc}{house}&r - &e{points}&r!");
+                    "<yellow>{giver}<white> : {hc}{house}<white> - <yellow>{points}<white>!");
         } else if (args.length == 4 && playerName != null) {
             message = languageHook.getMessage(path + ".playerNoReason", senderPlayer,
-                    "&e{giver}&r : &e{player}&r {hc}{house}&r - &e{points}&r!");
+                    "<yellow>{giver}<white> : <yellow>{player}<white> {hc}{house}<white> - <yellow>{points}<white>!");
         } else if (args.length == 4) {
             message = languageHook.getMessage(path + ".reasonOnly", senderPlayer,
-                    "&e{giver}&r : {hc}{house}&r - &e{points}&r for {reason}!");
+                    "<yellow>{giver}<white> : {hc}{house}<white> - <yellow>{points}<white> for {reason}!");
         } else if (playerName != null) {
             message = languageHook.getMessage(path + ".playerWithReason", senderPlayer,
-                    "&e{giver}&r : &e{player}&r {hc}{house}&r - &e{points}&r for {reason}!");
+                    "<yellow>{giver}<white> : <yellow>{player}<white> {hc}{house}<white> - <yellow>{points}<white> for {reason}!");
             String[] sub = Arrays.copyOfRange(args, 4, args.length + 1);
             reason = StringUtils.join(sub, " ");
         } else {
             message = languageHook.getMessage(path + ".reasonOnly", senderPlayer,
-                    "&e{giver}&r : {hc}{house}&r - &e{points}&r for {reason}!");
+                    "<yellow>{giver}<white> : {hc}{house}<white> - <yellow>{points}<white> for {reason}!");
             String[] sub = Arrays.copyOfRange(args, 3, args.length + 1);
             reason = StringUtils.join(sub, " ");
         }
@@ -252,8 +259,8 @@ public class HousePointsCommand implements CommandExecutor {
      */
     private boolean reloadData(CommandSender sender, LanguageHook languageHook, Player senderPlayer) {
         if (!sender.hasPermission(permission.getReload())) {
-            sender.sendMessage(languageHook.getMessage("permission.no_permission_command", senderPlayer,
-                    DEFAULT_NO_PERMISSION));
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("permission.no_permission_command", senderPlayer,
+                    DEFAULT_NO_PERMISSION)));
             return false;
         }
 
@@ -272,16 +279,17 @@ public class HousePointsCommand implements CommandExecutor {
      */
     private boolean sendHouseStandings(CommandSender sender, LanguageHook languageHook, Player senderPlayer) {
         if (!sender.hasPermission(permission.getSee())) {
-            sender.sendMessage(languageHook.getMessage("permission.no_permission_command", senderPlayer,
-                    DEFAULT_NO_PERMISSION));
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("permission.no_permission_command", senderPlayer,
+                    DEFAULT_NO_PERMISSION)));
             return false;
         }
 
         sender.sendMessage(configuration.getStandingsTitle());
         for (House house : houseManager.getHouses()) {
             HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
-            sender.sendMessage(house.getChatColor() + house.getName() + configuration.getTitleColor()
-                    + BREAK + modifier.getPoints(house.getName().toUpperCase()));
+            sender.sendMessage(MiniMessage.miniMessage().deserialize("<" + house.getTextColor().asHexString() + ">"
+                    + house.getName() + "<" + configuration.getTitleColor().asHexString() + ">"
+                    + BREAK + modifier.getPoints(house.getName().toUpperCase())));
         }
         return true;
     }
@@ -298,7 +306,7 @@ public class HousePointsCommand implements CommandExecutor {
     private boolean validateEvent(CommandSender sender, HousePointsEvent event, LanguageHook languageHook, Player senderPlayer) {
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
-            sender.sendMessage(languageHook.getMessage("command.event_cancelled", senderPlayer, DEFAULT_EVENT_CANCELLED));
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("command.event_cancelled", senderPlayer, DEFAULT_EVENT_CANCELLED)));
             return true;
         }
         return false;
@@ -320,7 +328,7 @@ public class HousePointsCommand implements CommandExecutor {
                 .replace("{points}", String.valueOf(Math.abs(event.getPoints())))
                 .replace("{reason}", reason)
                 .replace("{house}", event.getHouse().getName())
-                .replace("{hc}", event.getHouse().getChatColor() + "")
+                .replace("{hc}", "<" + event.getHouse().getTextColor() + ">")
                 .replace("{giver}", event.getGiver());
     }
 
@@ -336,21 +344,18 @@ public class HousePointsCommand implements CommandExecutor {
             return;
         }
 
-
         int cx = loc.getBlockX() / 16;
         int cz = loc.getBlockZ() / 16;
-        boolean wasLoaded = loc.getWorld().isChunkLoaded(cx, cz);
-        if (!wasLoaded) {
-            loc.getWorld().setChunkForceLoaded(cx, cz, true);
-            loc.getWorld().loadChunk(cx, cz);
-        }
+        loc.getWorld().addPluginChunkTicket(cx, cz, PointsPlugin.getInstance());
 
         HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
         Sign sign = (Sign) loc.getBlock().getState();
+        @NotNull SignSide side = sign.getSide(Side.FRONT);
+        String plainTextHouse = ((TextComponent) side.line(0)).content();
 
-        if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(house.getName())) {
-            sign.setLine(0, house.getChatColor() + house.getName());
-            sign.setLine(2, String.valueOf(modifier.getPoints(house.getName().toUpperCase())));
+        if (plainTextHouse.equalsIgnoreCase(house.getName())) {
+            side.line(0, Component.text(house.getName(), house.getTextColor()));
+            side.line(2, Component.text(modifier.getPoints(house.getName().toUpperCase())));
             sign.update();
         }
 
@@ -359,7 +364,7 @@ public class HousePointsCommand implements CommandExecutor {
 
         if (!configuration.isShowingPointsRepresentation()) return;
 
-        House houseType = houseManager.getHouse(ChatColor.stripColor(sign.getLine(0)));
+        House houseType = houseManager.getHouse(plainTextHouse);
         if (houseType == null) return;
 
         Block block = loc.getBlock();
@@ -386,11 +391,6 @@ public class HousePointsCommand implements CommandExecutor {
 
 
         setupArmorStand(positions, block, facing, representation, houseType);
-        if (!wasLoaded) {
-            loc.getWorld().setChunkForceLoaded(cx, cz, false);
-            loc.getWorld().unloadChunkRequest(cx, cz);
-        }
-
     }
 
     private void setupArmorStand(Map<House, Integer> positions, Block block, BlockFace facing, PointRepresentation representation, House h) {
@@ -419,7 +419,8 @@ public class HousePointsCommand implements CommandExecutor {
             } else {
                 name = name.replace("{rank}", String.valueOf(hposition + 1));
             }
-            meta.setDisplayName(name);
+
+            meta.displayName(Component.text(name));
         } else if (representation == PointRepresentation.ITEM_NBT) {
             if (modifier.getPoints(h.getName().toUpperCase()) == 0 && configuration.isShowingNoPoints()) {
                 meta.setCustomModelData(configuration.getCustomItemNoPointsID());
@@ -429,7 +430,7 @@ public class HousePointsCommand implements CommandExecutor {
         }
 
         stack.setItemMeta(meta);
-        e.setHelmet(stack);
+        e.getEquipment().setHelmet(stack);
         e.setInvulnerable(true);
         e.setVisible(false);
         e.setGravity(false);

@@ -21,6 +21,10 @@
 package net.pandette.housepoints.config;
 
 import lombok.Value;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.pandette.housepoints.PointsPlugin;
 import net.pandette.housepoints.dtos.House;
 import org.bukkit.Bukkit;
@@ -35,6 +39,7 @@ import javax.inject.Singleton;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.BiConsumer;
 
 @Value
@@ -79,7 +84,7 @@ public class Configuration {
     public House getHouse(ConfigurationSection section, String path) {
         return new House(section.getInt(path + ".points"), path,
                 Material.valueOf(getEnumString(section, path + ".material")),
-                ChatColor.valueOf(getEnumString(section, path + ".chatColor")),
+                getColor(section, path + ".chatColor"),
                 section.getString(path + ".shortcut"),
                 section.getString(path + ".custom-item.rename"),
                 section.getInt(path + ".custom-item.id"));
@@ -93,6 +98,28 @@ public class Configuration {
     private String getEnumString(ConfigurationSection section, String path) {
         return section.getString(path).toUpperCase();
     }
+
+    private TextColor getColor(ConfigurationSection section, String path) {
+        TextColor color = null;
+        String configData = section.getString(path);
+        if (configData == null) return NamedTextColor.WHITE;
+        try {
+            color = NamedTextColor.NAMES.value(configData.toLowerCase(Locale.ROOT).replace(" ", "_"));
+        } catch (Exception e) {
+            //
+        }
+        if (color == null) {
+            try {
+                color = TextColor.fromHexString(configData);
+            } catch (Exception e) {
+                //
+            }
+        }
+
+        return color == null ? NamedTextColor.WHITE : color;
+    }
+
+
 
 
     public Location getLocation(ConfigurationSection section, String path) {
@@ -129,7 +156,7 @@ public class Configuration {
 
     public String getLanguageMessage(String messageId, String defaultMessage) {
         FileConfiguration config = PointsPlugin.getInstance().getConfig();
-        return ChatColor.translateAlternateColorCodes('&', config.getString("messages." + messageId, defaultMessage));
+        return config.getString("messages." + messageId, defaultMessage);
     }
 
     public Material getCustomItemMaterial() {
@@ -161,16 +188,15 @@ public class Configuration {
         return config.getDouble("custom-item.z", .5);
     }
 
-    public ChatColor getTitleColor() {
+    public TextColor getTitleColor() {
         FileConfiguration config = PointsPlugin.getInstance().getConfig();
-        String color = config.getString("MessageColor", "LIGHT_PURPLE");
-        return ChatColor.valueOf(chatColorString(color));
+        return getColor(config, "MessageColor");
     }
 
-    public String getStandingsTitle() {
+    public TextComponent getStandingsTitle() {
         FileConfiguration config = PointsPlugin.getInstance().getConfig();
         String title = config.getString("StandingsTitle", "   [Current House Standings]");
-        return getTitleColor() + title;
+        return Component.text(title, getTitleColor());
     }
 
     public List<String> getPositive() {
