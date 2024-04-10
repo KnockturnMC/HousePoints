@@ -22,6 +22,7 @@ package net.pandette.housepoints.events;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.kyori.adventure.text.Component;
 import net.pandette.housepoints.dtos.House;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -34,8 +35,8 @@ public class HousePointsEvent extends Event implements Cancellable {
     private static HandlerList handlers = new HandlerList();
     private final House house;
     private final int points;
-    private final String giver;
-    private final String receiver;
+    private final Component giver;
+    private final Component receiver;
     private boolean cancelled;
 
     @Override
