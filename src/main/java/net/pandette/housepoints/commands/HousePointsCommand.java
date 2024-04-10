@@ -137,10 +137,10 @@ public class HousePointsCommand implements CommandExecutor {
             return false;
         }
 
-        final String name;
+        final Component name;
         if (sender instanceof Player) {
             name = PointsPlugin.getInstance().getPointsPlayerData().getName(((Player) sender));
-        } else name = PointsPlugin.getInstance().getConfig().getString("consoleSender");
+        } else name = Component.text(PointsPlugin.getInstance().getConfig().getString("consoleSender"));
 
         House house = null;
         for (House h : houseManager.getHouses()) {
@@ -164,7 +164,7 @@ public class HousePointsCommand implements CommandExecutor {
         }
 
         final String path;
-        final String playerName;
+        final Component playerName;
 
         if (args.length > 3) {
             final Player player = Bukkit.getPlayer(args[3]);
@@ -222,7 +222,7 @@ public class HousePointsCommand implements CommandExecutor {
     /*
     This gets the message based on the command and prepares it to be broadcast.
      */
-    private String getMessage(String[] args, LanguageHook languageHook, Player senderPlayer, String path, String playerName, HousePointsEvent event) {
+    private String getMessage(String[] args, LanguageHook languageHook, Player senderPlayer, String path, Component playerName, HousePointsEvent event) {
         String message;
         String reason = "";
         if (args.length == 3) {
@@ -321,15 +321,16 @@ public class HousePointsCommand implements CommandExecutor {
      * @return Returns the message in a formatted form.
      */
     private static String formatMessage(String message, HousePointsEvent event, String reason) {
-        String pName = event.getReceiver();
-        if (pName == null) pName = "";
+        Component pName = event.getReceiver();
+        if (pName == null) pName = Component.text("");
+
         return message
-                .replace("{player}", pName)
+                .replace("{player}", MiniMessage.miniMessage().serialize(pName))
                 .replace("{points}", String.valueOf(Math.abs(event.getPoints())))
                 .replace("{reason}", reason)
                 .replace("{house}", event.getHouse().getName())
                 .replace("{hc}", "<" + event.getHouse().getTextColor() + ">")
-                .replace("{giver}", event.getGiver());
+                .replace("{giver}", MiniMessage.miniMessage().serialize(event.getGiver()));
     }
 
     /**
