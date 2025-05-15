@@ -56,11 +56,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * This class runs the main commands hub allowing the points plugin to operate.
@@ -164,17 +166,16 @@ public class HousePointsCommand implements CommandExecutor {
         }
 
         final String path;
-        final Component playerName;
+        final @Nullable Component receiverName;
+        final @Nullable UUID receiverUUID;
 
-        if (args.length > 3) {
-            final Player player = Bukkit.getPlayer(args[3]);
-            if (player == null) {
-                playerName = null;
-            } else {
-                playerName = PointsPlugin.getInstance().getPointsPlayerData().getName(player);
-            }
+        final Player receiverPlayerInstance = args.length > 3 ? Bukkit.getPlayer(args[3]) : null;
+        if (receiverPlayerInstance == null) {
+            receiverName = null;
+            receiverUUID = null;
         } else {
-            playerName = null;
+            receiverName = PointsPlugin.getInstance().getPointsPlayerData().getName(receiverPlayerInstance);
+            receiverUUID = receiverPlayerInstance.getUniqueId();
         }
 
         final HousePointsEvent event;
@@ -185,7 +186,7 @@ public class HousePointsCommand implements CommandExecutor {
                 return false;
             }
 
-            event = new HousePointsEvent(house, points, name, playerName);
+            event = new HousePointsEvent(house, points, name, receiverName, receiverUUID);
             if (validateEvent(sender, event, languageHook, senderPlayer)) return false;
             path = "give";
         } else if (configuration.getNegative().contains(args[0].toLowerCase())) {
@@ -195,7 +196,7 @@ public class HousePointsCommand implements CommandExecutor {
                 return false;
             }
 
-            event = new HousePointsEvent(house, -points, name, playerName);
+            event = new HousePointsEvent(house, -points, name, receiverName, receiverUUID);
             if (validateEvent(sender, event, languageHook, senderPlayer)) return false;
             path = "take";
         } else {
@@ -204,7 +205,7 @@ public class HousePointsCommand implements CommandExecutor {
         }
 
 
-        String finalMessage = getMessage(args, languageHook, senderPlayer, path, playerName, event);
+        String finalMessage = getMessage(args, languageHook, senderPlayer, path, receiverName, event);
         @NotNull Component component = MiniMessage.miniMessage().deserialize(finalMessage);
 
         languageHook.broadCastMessage(component);
