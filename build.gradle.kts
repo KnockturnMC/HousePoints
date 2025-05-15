@@ -1,5 +1,5 @@
 group = "com.knockturnmc"
-version = "4.0.1-SNAPSHOT"
+version = "4.0.1"
 tasks.shadowJar { archiveClassifier = "final"; mergeServiceFiles() }
 tasks.build { dependsOn(tasks.shadowJar) }
 
@@ -10,9 +10,10 @@ plugins {
     id("io.freefair.lombok") version "8.4"
 }
 
-
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(17)
+    withSourcesJar();
+    withJavadocJar()
 }
 
 tasks.withType(Javadoc::class) {
@@ -21,6 +22,15 @@ tasks.withType(Javadoc::class) {
 }
 tasks.withType(ProcessResources::class) {
     filteringCharset = Charsets.UTF_8.name()
+}
+
+tasks.processResources {
+    val expansion = mapOf(
+        "version" to project.version
+    )
+
+    inputs.properties(expansion)
+    filesMatching("plugin.yml") { expand(expansion) }
 }
 
 repositories {

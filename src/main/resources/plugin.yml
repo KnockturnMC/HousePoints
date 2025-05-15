@@ -1,5 +1,5 @@
 name: HousePoints
-version: 4.0.0
+version: ${version}
 author: iarepandemonium
 description: A plugin for house points.
 softdepend:
