@@ -1,5 +1,5 @@
 group = "com.knockturnmc"
-version = "4.0.1"
+version = "4.0.2-SNAPSHOT"
 tasks.shadowJar { archiveClassifier = "final"; mergeServiceFiles() }
 tasks.build { dependsOn(tasks.shadowJar) }
 
