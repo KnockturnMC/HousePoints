@@ -1,8 +1,3 @@
-group = "com.knockturnmc"
-version = "4.0.1-SNAPSHOT"
-tasks.shadowJar { archiveClassifier = "final"; mergeServiceFiles() }
-tasks.build { dependsOn(tasks.shadowJar) }
-
 plugins {
     java
     `maven-publish`
@@ -10,13 +5,15 @@ plugins {
     id("io.freefair.lombok") version "8.4"
 }
 
-apply(plugin = "java")
 group="com.knockturnmc"
-version = "5.0.0-SNAPSHOT"
-tasks.shadowJar { archiveClassifier.set("final"); mergeServiceFiles() }
+version = "5.0.1-SNAPSHOT"
+tasks.shadowJar { archiveClassifier = "final"; mergeServiceFiles() }
+tasks.build { dependsOn(tasks.shadowJar) }
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(17)
+    withSourcesJar();
+    withJavadocJar()
 }
 
 tasks.withType(ProcessResources::class) {
