@@ -16,18 +16,12 @@ jobs:
           java-version: '17'
 
       - name: "Setup gradle"
-        uses: "gradle/gradle-build-action@982da8e78c05368c70dac0351bb82647a9e9a5d2" # v2.11.1
-
-      - name: "Validate gradle wrapper"
-        uses: "gradle/wrapper-validation-action@56b90f209b02bf6d1deae490e9ef18b21a389cd4" # v1.1.0
-
+        uses: "gradle/actions/setup-gradle@06832c7b30a0129d7fb559bcc6e43d26f6374244" # v4.3.1
       - name: "Build with gradle"
         run: "./gradlew clean build"
 
       - name: "Release"
-        uses: "softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844" # v0.1.15
+        uses: "softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf631" # v2.2.2
         if: "startsWith(github.ref, 'refs/tags/')"
         with:
           files: "build/libs/housepoints-*-final.jar"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

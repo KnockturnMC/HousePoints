@@ -26,16 +26,21 @@ import net.pandette.housepoints.dtos.House;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = false)
 @Data
 public class HousePointsEvent extends Event implements Cancellable {
 
     private static HandlerList handlers = new HandlerList();
-    private final House house;
+    private final @NotNull House house;
     private final int points;
     private final String giver;
-    private final String receiver;
+    private final @Nullable String receiver;
+    private final @Nullable UUID receiverUUID;
     private boolean cancelled;
 
     @Override
