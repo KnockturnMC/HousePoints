@@ -18,6 +18,12 @@ java {
 
 tasks.withType(ProcessResources::class) {
     filteringCharset = Charsets.UTF_8.name()
+    val expansion = mapOf(
+        "version" to project.version
+    )
+
+    inputs.properties(expansion)
+    filesMatching("plugin.yml") { expand(expansion) }
 }
 
 repositories {
