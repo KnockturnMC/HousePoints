@@ -6,22 +6,30 @@ import net.pandette.housepoints.config.PointRepresentation;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemDisplay;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.BoundingBox;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 @Singleton
 public class SignManager {
+
+    private static final Set<PointRepresentation> ENTITY_BASED_REPRESENTATIONS = EnumSet.of(
+        PointRepresentation.ITEM_RENAME, PointRepresentation.ITEM_NBT
+    );
 
     private final List<Location> locationList;
     private final Configuration configuration;
 
     @Inject
-    public SignManager(Configuration configuration) {
+    public SignManager(final Configuration configuration) {
         locationList = new ArrayList<>();
         this.configuration = configuration;
     }
@@ -30,28 +38,26 @@ public class SignManager {
         return new ArrayList<>(locationList);
     }
 
-    public void removeLocation(Location location) {
+    public void removeLocation(final Location location) {
         locationList.remove(location);
-        removeArmorstands(location);
+        removeVisualizingEntity(location);
     }
 
-    public void removeArmorstands(Location location) {
-        if (configuration.getRepresentationType() != PointRepresentation.ITEM_NBT
-                && configuration.getRepresentationType() != PointRepresentation.ITEM_RENAME) return;
+    public void removeVisualizingEntity(final Location location) {
+        if (!ENTITY_BASED_REPRESENTATIONS.contains(this.configuration.getRepresentationType())) return;
 
-        Location above = location.clone().getBlock().getLocation();
+        final Location above = location.clone().getBlock().getLocation();
 
-        for (Entity e : above.getWorld().getEntitiesByClass(ArmorStand.class)) {
+        for (final Entity e : above.getChunk().getEntities()) {
             if (!e.getLocation().getBlock().getLocation().equals(above)) continue;
-            PersistentDataContainer container = e.getPersistentDataContainer();
-            boolean exists = container.has(PointsPlugin.getInstance().getNamespacedKey(), PersistentDataType.BYTE);
-            if (!exists) continue;
-            e.remove();
+
+            final PersistentDataContainer container = e.getPersistentDataContainer();
+            if (container.has(PointsPlugin.getInstance().getNamespacedKey(), PersistentDataType.BYTE)) e.remove();
         }
 
     }
 
-    public void addLocation(Location location) {
+    public void addLocation(final Location location) {
         locationList.add(location);
     }
 

@@ -1,17 +1,17 @@
 plugins {
     java
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("io.freefair.lombok") version "8.4"
+    id("com.gradleup.shadow") version "9.3.0"
+    id("io.freefair.lombok") version "9.2.0"
 }
 
-group="com.knockturnmc"
+group = "com.knockturnmc"
 version = "5.0.1-SNAPSHOT"
 tasks.shadowJar { archiveClassifier = "final"; mergeServiceFiles() }
 tasks.build { dependsOn(tasks.shadowJar) }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(17)
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
     withSourcesJar();
     withJavadocJar()
 }
@@ -37,7 +37,7 @@ repositories {
 
 dependencies {
     // Plugin dependencies
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
 
     //Lombok
     compileOnly("org.projectlombok:lombok:1.18.24")
@@ -47,10 +47,10 @@ dependencies {
 
 
     //Dagger
-    implementation("com.google.dagger:dagger:2.50")
-    annotationProcessor("com.google.dagger:dagger-compiler:2.50")
+    implementation("com.google.dagger:dagger:2.59")
+    annotationProcessor("com.google.dagger:dagger-compiler:2.59")
 
-    implementation("org.apache.commons:commons-text:1.11.0")
+    implementation("org.apache.commons:commons-text:1.15.0")
 }
 
 publishing {

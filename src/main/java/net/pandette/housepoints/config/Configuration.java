@@ -33,6 +33,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jspecify.annotations.Nullable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -186,6 +187,22 @@ public class Configuration {
     public Double getCustomItemZ() {
         FileConfiguration config = PointsPlugin.getInstance().getConfig();
         return config.getDouble("custom-item.z", .5);
+    }
+
+    public @Nullable String getCustomItemItemModel() {
+        return PointsPlugin.getInstance().getConfig().getString("custom-item.model");
+    }
+
+    public double getCustomItemScaleX() {
+        return PointsPlugin.getInstance().getConfig().getDouble("custom-item.scale.x", 1f);
+    }
+
+    public double getCustomItemScaleY() {
+        return PointsPlugin.getInstance().getConfig().getDouble("custom-item.scale.y", 1f);
+    }
+
+    public double getCustomItemScaleZ() {
+        return PointsPlugin.getInstance().getConfig().getDouble("custom-item.scale.z", 1f);
     }
 
     public TextColor getTitleColor() {

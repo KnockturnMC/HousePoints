@@ -14,7 +14,7 @@ public class DefaultPointData implements PointData {
     @Override
     public Map<House, Integer> getHouseRank(Collection<House> houses) {
         HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
-        List<House> houss = new ArrayList<>(houses);
+        final List<House> houss = new ArrayList<>(houses);
         houss.sort((a, b) -> {
             int A = modifier.getPoints(a.getName().toUpperCase());
             int B = modifier.getPoints(b.getName().toUpperCase());
