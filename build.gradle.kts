@@ -3,6 +3,7 @@ plugins {
     `maven-publish`
     id("com.gradleup.shadow") version "9.3.0"
     id("io.freefair.lombok") version "9.2.0"
+    id("xyz.jpenilla.run-paper") version "3.0.2"
 }
 
 group = "com.knockturnmc"
@@ -51,6 +52,19 @@ dependencies {
     annotationProcessor("com.google.dagger:dagger-compiler:2.59")
 
     implementation("org.apache.commons:commons-text:1.15.0")
+}
+
+tasks.runServer {
+    val testServerDirectory = file(properties["knockturn.testserver"].toString());
+    javaLauncher = javaToolchains.launcherFor {
+        vendor = JvmVendorSpec.JETBRAINS
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    jvmArgs("-XX:+AllowEnhancedClassRedefinition")
+    runDirectory = testServerDirectory
+
+    minecraftVersion("1.21.11")
+    serverJar(testServerDirectory.resolve("server.jar"))
 }
 
 publishing {

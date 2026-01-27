@@ -28,7 +28,6 @@ import net.kyori.adventure.text.format.TextColor;
 import net.pandette.housepoints.PointsPlugin;
 import net.pandette.housepoints.dtos.House;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -203,6 +202,18 @@ public class Configuration {
 
     public double getCustomItemScaleZ() {
         return PointsPlugin.getInstance().getConfig().getDouble("custom-item.scale.z", 1f);
+    }
+
+    public double getItemNBTV2FractionForXZ() {
+        return PointsPlugin.getInstance().getConfig().getDouble("custom-item.nbtv2.innerXZFraction", 1f);
+    }
+
+    public double getItemNBTV2FractionForInnerY() {
+        return PointsPlugin.getInstance().getConfig().getDouble("custom-item.nbtv2.innerYFraction", 1f);
+    }
+
+    public double getItemNBTV2FractionForInnerYOffset() {
+        return PointsPlugin.getInstance().getConfig().getDouble("custom-item.nbtv2.innerYOffset", 1f);
     }
 
     public TextColor getTitleColor() {

@@ -22,7 +22,7 @@ import java.util.Set;
 public class SignManager {
 
     private static final Set<PointRepresentation> ENTITY_BASED_REPRESENTATIONS = EnumSet.of(
-        PointRepresentation.ITEM_RENAME, PointRepresentation.ITEM_NBT
+        PointRepresentation.ITEM_RENAME, PointRepresentation.ITEM_NBT, PointRepresentation.ITEM_NBT_V2
     );
 
     private final List<Location> locationList;
