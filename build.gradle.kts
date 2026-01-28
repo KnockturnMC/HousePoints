@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.knockturnmc"
-version = "5.0.1-SNAPSHOT"
+version = "5.0.1"
 tasks.shadowJar { archiveClassifier = "final"; mergeServiceFiles() }
 tasks.build { dependsOn(tasks.shadowJar) }
 
