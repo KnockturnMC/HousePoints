@@ -28,11 +28,11 @@ import net.kyori.adventure.text.format.TextColor;
 import net.pandette.housepoints.PointsPlugin;
 import net.pandette.housepoints.dtos.House;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jspecify.annotations.Nullable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -186,6 +186,34 @@ public class Configuration {
     public Double getCustomItemZ() {
         FileConfiguration config = PointsPlugin.getInstance().getConfig();
         return config.getDouble("custom-item.z", .5);
+    }
+
+    public @Nullable String getCustomItemItemModel() {
+        return PointsPlugin.getInstance().getConfig().getString("custom-item.model");
+    }
+
+    public double getCustomItemScaleX() {
+        return PointsPlugin.getInstance().getConfig().getDouble("custom-item.scale.x", 1f);
+    }
+
+    public double getCustomItemScaleY() {
+        return PointsPlugin.getInstance().getConfig().getDouble("custom-item.scale.y", 1f);
+    }
+
+    public double getCustomItemScaleZ() {
+        return PointsPlugin.getInstance().getConfig().getDouble("custom-item.scale.z", 1f);
+    }
+
+    public double getItemNBTV2FractionForXZ() {
+        return PointsPlugin.getInstance().getConfig().getDouble("custom-item.nbtv2.innerXZFraction", 1f);
+    }
+
+    public double getItemNBTV2FractionForInnerY() {
+        return PointsPlugin.getInstance().getConfig().getDouble("custom-item.nbtv2.innerYFraction", 1f);
+    }
+
+    public double getItemNBTV2FractionForInnerYOffset() {
+        return PointsPlugin.getInstance().getConfig().getDouble("custom-item.nbtv2.innerYOffset", 1f);
     }
 
     public TextColor getTitleColor() {

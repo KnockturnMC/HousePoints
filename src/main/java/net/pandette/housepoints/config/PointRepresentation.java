@@ -1,7 +1,7 @@
 package net.pandette.housepoints.config;
 
 public enum PointRepresentation {
-    ITEM_RENAME, ITEM_NBT, BLOCK, NONE;
+    ITEM_RENAME, ITEM_NBT, ITEM_NBT_V2, BLOCK, NONE;
 
     public static PointRepresentation getRepresentation(String config) {
         try {

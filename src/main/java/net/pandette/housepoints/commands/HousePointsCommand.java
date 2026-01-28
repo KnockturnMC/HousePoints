@@ -23,7 +23,6 @@ package net.pandette.housepoints.commands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.pandette.housepoints.PointsPlugin;
 import net.pandette.housepoints.config.Configuration;
 import net.pandette.housepoints.config.HousePointsModifier;
@@ -36,9 +35,10 @@ import net.pandette.housepoints.managers.HouseManager;
 import net.pandette.housepoints.managers.SignManager;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -50,17 +50,23 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.BlockDisplay;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -91,8 +97,8 @@ public class HousePointsCommand implements CommandExecutor {
     Use injection from Dagger to get dependencies.
      */
     @Inject
-    public HousePointsCommand(Configuration configuration, HouseManager houseManager, Permission permission,
-                              SignManager signManager) {
+    public HousePointsCommand(final Configuration configuration, final HouseManager houseManager, final Permission permission,
+                              final SignManager signManager) {
         this.configuration = configuration;
         this.houseManager = houseManager;
         this.permission = permission;
@@ -109,7 +115,7 @@ public class HousePointsCommand implements CommandExecutor {
      * @return Return if the command worked or not.
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
+    public boolean onCommand(final CommandSender sender, final Command command, final String s, final String[] args) {
 
         if (configuration.isAsync()) {
             Bukkit.getScheduler().runTaskAsynchronously(PointsPlugin.getInstance(), () -> runCommand(sender, args));
@@ -119,8 +125,8 @@ public class HousePointsCommand implements CommandExecutor {
         return runCommand(sender, args);
     }
 
-    private boolean runCommand(CommandSender sender, String[] args) {
-        LanguageHook languageHook = PointsPlugin.getInstance().getLanguageHook();
+    private boolean runCommand(final CommandSender sender, final String[] args) {
+        final LanguageHook languageHook = PointsPlugin.getInstance().getLanguageHook();
         Player senderPlayer = null;
         if (sender instanceof Player) {
             senderPlayer = (Player) sender;
@@ -145,7 +151,7 @@ public class HousePointsCommand implements CommandExecutor {
         } else name = Component.text(PointsPlugin.getInstance().getConfig().getString("consoleSender"));
 
         House house = null;
-        for (House h : houseManager.getHouses()) {
+        for (final House h : houseManager.getHouses()) {
             if (args[1].equalsIgnoreCase(h.getName()) || args[1].equalsIgnoreCase(h.getShortcut())) {
                 house = h;
                 break;
@@ -160,7 +166,7 @@ public class HousePointsCommand implements CommandExecutor {
         final int points;
         try {
             points = Integer.parseInt(args[2]);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             sender.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("command.syntax", senderPlayer, DEFAULT_SYNTAX)));
             return false;
         }
@@ -182,7 +188,7 @@ public class HousePointsCommand implements CommandExecutor {
         if (configuration.getPositive().contains(args[0].toLowerCase())) {
             if (!sender.hasPermission(permission.getGive()) && !sender.hasPermission(permission.getGive() + "." + house.getName().toUpperCase())) {
                 sender.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("permission.no_permission_command", senderPlayer,
-                        DEFAULT_NO_PERMISSION)));
+                    DEFAULT_NO_PERMISSION)));
                 return false;
             }
 
@@ -192,7 +198,7 @@ public class HousePointsCommand implements CommandExecutor {
         } else if (configuration.getNegative().contains(args[0].toLowerCase())) {
             if (!sender.hasPermission(permission.getTake()) && !sender.hasPermission(permission.getTake() + "." + house.getName().toUpperCase())) {
                 sender.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("permission.no_permission_command", senderPlayer,
-                        DEFAULT_NO_PERMISSION)));
+                    DEFAULT_NO_PERMISSION)));
                 return false;
             }
 
@@ -205,14 +211,14 @@ public class HousePointsCommand implements CommandExecutor {
         }
 
 
-        String finalMessage = getMessage(args, languageHook, senderPlayer, path, receiverName, event);
-        @NotNull Component component = MiniMessage.miniMessage().deserialize(finalMessage);
+        final String finalMessage = getMessage(args, languageHook, senderPlayer, path, receiverName, event);
+        @NotNull final Component component = MiniMessage.miniMessage().deserialize(finalMessage);
 
         languageHook.broadCastMessage(component);
 
-        House finalHouse = house;
+        final House finalHouse = house;
         Bukkit.getScheduler().runTask(PointsPlugin.getInstance(), () -> {
-            for (Location location : signManager.getLocations()) {
+            for (final Location location : signManager.getLocations()) {
                 changeHouseSign(finalHouse, location);
             }
         });
@@ -223,27 +229,27 @@ public class HousePointsCommand implements CommandExecutor {
     /*
     This gets the message based on the command and prepares it to be broadcast.
      */
-    private String getMessage(String[] args, LanguageHook languageHook, Player senderPlayer, String path, Component playerName, HousePointsEvent event) {
-        String message;
+    private String getMessage(final String[] args, final LanguageHook languageHook, final Player senderPlayer, final String path, final Component playerName, final HousePointsEvent event) {
+        final String message;
         String reason = "";
         if (args.length == 3) {
             message = languageHook.getMessage(path + ".houseOnly", senderPlayer,
-                    "<yellow>{giver}<white> : {hc}{house}<white> - <yellow>{points}<white>!");
+                "<yellow>{giver}<white> : {hc}{house}<white> - <yellow>{points}<white>!");
         } else if (args.length == 4 && playerName != null) {
             message = languageHook.getMessage(path + ".playerNoReason", senderPlayer,
-                    "<yellow>{giver}<white> : <yellow>{player}<white> {hc}{house}<white> - <yellow>{points}<white>!");
+                "<yellow>{giver}<white> : <yellow>{player}<white> {hc}{house}<white> - <yellow>{points}<white>!");
         } else if (args.length == 4) {
             message = languageHook.getMessage(path + ".reasonOnly", senderPlayer,
-                    "<yellow>{giver}<white> : {hc}{house}<white> - <yellow>{points}<white> for {reason}!");
+                "<yellow>{giver}<white> : {hc}{house}<white> - <yellow>{points}<white> for {reason}!");
         } else if (playerName != null) {
             message = languageHook.getMessage(path + ".playerWithReason", senderPlayer,
-                    "<yellow>{giver}<white> : <yellow>{player}<white> {hc}{house}<white> - <yellow>{points}<white> for {reason}!");
-            String[] sub = Arrays.copyOfRange(args, 4, args.length + 1);
+                "<yellow>{giver}<white> : <yellow>{player}<white> {hc}{house}<white> - <yellow>{points}<white> for {reason}!");
+            final String[] sub = Arrays.copyOfRange(args, 4, args.length + 1);
             reason = StringUtils.join(sub, " ");
         } else {
             message = languageHook.getMessage(path + ".reasonOnly", senderPlayer,
-                    "<yellow>{giver}<white> : {hc}{house}<white> - <yellow>{points}<white> for {reason}!");
-            String[] sub = Arrays.copyOfRange(args, 3, args.length + 1);
+                "<yellow>{giver}<white> : {hc}{house}<white> - <yellow>{points}<white> for {reason}!");
+            final String[] sub = Arrays.copyOfRange(args, 3, args.length + 1);
             reason = StringUtils.join(sub, " ");
         }
 
@@ -258,10 +264,10 @@ public class HousePointsCommand implements CommandExecutor {
      * @param senderPlayer Sender player to allow for customizing language based on player.
      * @return Returns whether the command was successful or not.
      */
-    private boolean reloadData(CommandSender sender, LanguageHook languageHook, Player senderPlayer) {
+    private boolean reloadData(final CommandSender sender, final LanguageHook languageHook, final Player senderPlayer) {
         if (!sender.hasPermission(permission.getReload())) {
             sender.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("permission.no_permission_command", senderPlayer,
-                    DEFAULT_NO_PERMISSION)));
+                DEFAULT_NO_PERMISSION)));
             return false;
         }
 
@@ -278,19 +284,19 @@ public class HousePointsCommand implements CommandExecutor {
      * @param senderPlayer Sender player to allow for customizing language based on player.
      * @return Returns whether the command was successful or not.
      */
-    private boolean sendHouseStandings(CommandSender sender, LanguageHook languageHook, Player senderPlayer) {
+    private boolean sendHouseStandings(final CommandSender sender, final LanguageHook languageHook, final Player senderPlayer) {
         if (!sender.hasPermission(permission.getSee())) {
             sender.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("permission.no_permission_command", senderPlayer,
-                    DEFAULT_NO_PERMISSION)));
+                DEFAULT_NO_PERMISSION)));
             return false;
         }
 
         sender.sendMessage(configuration.getStandingsTitle());
-        for (House house : houseManager.getHouses()) {
-            HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
+        for (final House house : houseManager.getHouses()) {
+            final HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
             sender.sendMessage(MiniMessage.miniMessage().deserialize("<" + house.getTextColor().asHexString() + ">"
-                    + house.getName() + "<" + configuration.getTitleColor().asHexString() + ">"
-                    + BREAK + modifier.getPoints(house.getName().toUpperCase())));
+                + house.getName() + "<" + configuration.getTitleColor().asHexString() + ">"
+                + BREAK + modifier.getPoints(house.getName().toUpperCase())));
         }
         return true;
     }
@@ -304,7 +310,7 @@ public class HousePointsCommand implements CommandExecutor {
      * @param senderPlayer Sender player to allow for customizing language based on player.
      * @return Whether the event went through or was cancelled.
      */
-    private boolean validateEvent(CommandSender sender, HousePointsEvent event, LanguageHook languageHook, Player senderPlayer) {
+    private boolean validateEvent(final CommandSender sender, final HousePointsEvent event, final LanguageHook languageHook, final Player senderPlayer) {
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             sender.sendMessage(MiniMessage.miniMessage().deserialize(languageHook.getMessage("command.event_cancelled", senderPlayer, DEFAULT_EVENT_CANCELLED)));
@@ -321,17 +327,17 @@ public class HousePointsCommand implements CommandExecutor {
      * @param reason  Reason for points change
      * @return Returns the message in a formatted form.
      */
-    private static String formatMessage(String message, HousePointsEvent event, String reason) {
+    private static String formatMessage(final String message, final HousePointsEvent event, final String reason) {
         Component pName = event.getReceiver();
         if (pName == null) pName = Component.text("");
 
         return message
-                .replace("{player}", MiniMessage.miniMessage().serialize(pName))
-                .replace("{points}", String.valueOf(Math.abs(event.getPoints())))
-                .replace("{reason}", reason)
-                .replace("{house}", event.getHouse().getName())
-                .replace("{hc}", "<" + event.getHouse().getTextColor() + ">")
-                .replace("{giver}", MiniMessage.miniMessage().serialize(event.getGiver()));
+            .replace("{player}", MiniMessage.miniMessage().serialize(pName))
+            .replace("{points}", String.valueOf(Math.abs(event.getPoints())))
+            .replace("{reason}", reason)
+            .replace("{house}", event.getHouse().getName())
+            .replace("{hc}", "<" + event.getHouse().getTextColor() + ">")
+            .replace("{giver}", MiniMessage.miniMessage().serialize(event.getGiver()));
     }
 
     /**
@@ -340,20 +346,23 @@ public class HousePointsCommand implements CommandExecutor {
      * @param house House to change for.
      * @param loc   Location to change
      */
-    private void changeHouseSign(House house, Location loc) {
+    private void changeHouseSign(final House house, final Location loc) {
         if (!Tag.WALL_SIGNS.isTagged(loc.getBlock().getType())) {
+            PointsPlugin.getInstance().getComponentLogger().warn(
+                "Removing sign at {} from runtime as no sign can be found there", loc
+            );
             signManager.removeLocation(loc);
             return;
         }
 
-        int cx = loc.getBlockX() / 16;
-        int cz = loc.getBlockZ() / 16;
+        final int cx = loc.getBlockX() / 16;
+        final int cz = loc.getBlockZ() / 16;
         loc.getWorld().addPluginChunkTicket(cx, cz, PointsPlugin.getInstance());
 
-        HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
-        Sign sign = (Sign) loc.getBlock().getState();
-        @NotNull SignSide side = sign.getSide(Side.FRONT);
-        String plainTextHouse = ((TextComponent) side.line(0)).content();
+        final HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
+        final Sign sign = (Sign) loc.getBlock().getState();
+        @NotNull final SignSide side = sign.getSide(Side.FRONT);
+        final String plainTextHouse = ((TextComponent) side.line(0)).content();
 
         if (plainTextHouse.equalsIgnoreCase(house.getName())) {
             side.line(0, Component.text(house.getName(), house.getTextColor()));
@@ -361,21 +370,21 @@ public class HousePointsCommand implements CommandExecutor {
             sign.update();
         }
 
-        Map<House, Integer> positions = PointsPlugin.getInstance().getPointData()
-                .getHouseRank(houseManager.getHouses());
+        final Map<House, Integer> positions = PointsPlugin.getInstance().getPointData()
+            .getHouseRank(houseManager.getHouses());
 
         if (!configuration.isShowingPointsRepresentation()) return;
 
-        House houseType = houseManager.getHouse(plainTextHouse);
+        final House houseType = houseManager.getHouse(plainTextHouse);
         if (houseType == null) return;
 
-        Block block = loc.getBlock();
-        WallSign s = (WallSign) block.getState().getBlockData();
-        BlockFace facing = s.getFacing();
-        Block connected = block.getRelative(facing.getOppositeFace());
-        int position = positions.get(houseType);
+        final Block block = loc.getBlock();
+        final WallSign s = (WallSign) block.getState().getBlockData();
+        final BlockFace facing = s.getFacing();
+        final Block connected = block.getRelative(facing.getOppositeFace());
+        final int position = positions.get(houseType);
 
-        PointRepresentation representation = configuration.getRepresentationType();
+        final PointRepresentation representation = configuration.getRepresentationType();
 
         if (representation == PointRepresentation.BLOCK) {
 
@@ -395,25 +404,71 @@ public class HousePointsCommand implements CommandExecutor {
         setupArmorStand(positions, block, facing, representation, houseType);
     }
 
-    private void setupArmorStand(Map<House, Integer> positions, Block block, BlockFace facing, PointRepresentation representation, House h) {
-        Location above = block.getLocation().clone();
+    private void setupArmorStand(final Map<House, Integer> positions, final Block block, final BlockFace facing, final PointRepresentation representation, final House h) {
+        final Location above = block.getLocation().clone();
         above.setY(above.getY() + 1 + configuration.getCustomItemY());
         above.setX(above.getX() + configuration.getCustomItemX());
         above.setZ(above.getZ() + configuration.getCustomItemZ());
         above.setDirection(facing.getDirection());
         above.setPitch(0);
-        signManager.removeArmorstands(above);
+        signManager.removeVisualizingEntity(above);
 
-        int hposition = positions.get(h);
-        ItemStack stack = new ItemStack(configuration.getCustomItemMaterial());
+        final int hposition = positions.get(h);
 
-        ItemMeta meta = stack.getItemMeta();
-        if (meta == null) return;
-        ArmorStand e = above.getWorld().spawn(above, ArmorStand.class);
+        setupEntity(representation, h, above, hposition);
 
-        PersistentDataContainer container = e.getPersistentDataContainer();
+        if (representation == PointRepresentation.ITEM_NBT_V2) {
+            final double maxYSize = configuration.getCustomItemScaleY() * configuration.getItemNBTV2FractionForInnerY();
+            final double maxPosition = 10;
+            final double ySizeMul = Math.clamp(hposition, 0.1, maxPosition) * (maxYSize / maxPosition);
+            final double xzScaleFactor = configuration.getItemNBTV2FractionForXZ();
+            above.getWorld().spawn(above, BlockDisplay.class, b -> {
+                b.getPersistentDataContainer().set(PointsPlugin.getInstance().getNamespacedKey(), PersistentDataType.BYTE, (byte) 0);
+                b.setBlock(h.getMaterial().createBlockData());
+                final Transformation transformation = b.getTransformation();
+                transformation.getScale().set(
+                    configuration.getCustomItemScaleX() * xzScaleFactor,
+                    ySizeMul,
+                    configuration.getCustomItemScaleZ() * xzScaleFactor
+                );
+                transformation.getTranslation().set(
+                    -configuration.getCustomItemScaleX() * xzScaleFactor / 2,
+                    -configuration.getCustomItemScaleY() * -configuration.getItemNBTV2FractionForInnerYOffset(),
+                    -configuration.getCustomItemScaleZ() * xzScaleFactor / 2
+                );
+                b.setTransformation(transformation);
+            });
+        }
+    }
+
+    private Entity setupEntity(final PointRepresentation representation, final House h, final Location above, final int hposition) {
+        final ItemStack stack = new ItemStack(configuration.getCustomItemMaterial());
+
+        final ItemMeta meta = stack.getItemMeta();
+        if (meta == null) return null;
+
+        final Entity e;
+        if (representation == PointRepresentation.ITEM_NBT_V2) {
+            e = above.getWorld().spawn(above, ItemDisplay.class, a -> {
+                final Transformation transformation = a.getTransformation();
+                transformation.getScale().set(
+                    configuration.getCustomItemScaleX(),
+                    configuration.getCustomItemScaleY(),
+                    configuration.getCustomItemScaleZ()
+                );
+                a.setTransformation(transformation);
+            });
+        } else {
+            e = above.getWorld().spawn(above, ArmorStand.class, a -> {
+                a.setInvulnerable(true);
+                a.setVisible(false);
+                a.setGravity(false);
+            });
+        }
+
+        final PersistentDataContainer container = e.getPersistentDataContainer();
         container.set(PointsPlugin.getInstance().getNamespacedKey(), PersistentDataType.BYTE, (byte) 0);
-        HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
+        final HousePointsModifier modifier = PointsPlugin.getInstance().getHousePointsModifier();
         if (representation == PointRepresentation.ITEM_RENAME) {
             String name = h.getCustomItemRename();
             if (modifier.getPoints(h.getName().toUpperCase()) == 0 && configuration.isShowingNoPoints()) {
@@ -429,15 +484,28 @@ public class HousePointsCommand implements CommandExecutor {
             } else {
                 meta.setCustomModelData(h.getCustomItemID() + hposition);
             }
+        } else if (representation == PointRepresentation.ITEM_NBT_V2) {
+            final CustomModelDataComponent customModelDataComponent = meta.getCustomModelDataComponent();
+            customModelDataComponent.setColors(List.of(Color.fromRGB(h.getTextColor().value())));
+            customModelDataComponent.setFloats(List.of((float) hposition));
+            meta.setCustomModelDataComponent(customModelDataComponent);
+        }
+
+        final String customItemItemModel = configuration.getCustomItemItemModel();
+        if (customItemItemModel != null && !customItemItemModel.isEmpty()) {
+            meta.setItemModel(NamespacedKey.fromString(customItemItemModel));
         }
 
         stack.setItemMeta(meta);
-        e.getEquipment().setHelmet(stack);
-        e.setInvulnerable(true);
-        e.setVisible(false);
-        e.setGravity(false);
-    }
+        if (e instanceof final ArmorStand armorStand) {
+            armorStand.getEquipment().setHelmet(stack);
+        } else {
+            final ItemDisplay itemDisplay = (ItemDisplay) e;
+            itemDisplay.setItemStack(stack);
+        }
 
+        return e;
+    }
 
     /**
      * This sets the block with glass if we have a block change type.
@@ -445,19 +513,19 @@ public class HousePointsCommand implements CommandExecutor {
      * @param connected The location its connected to.
      * @param i         - number to go up
      */
-    private void setBlock(Block connected, int i) {
-        Location location = connected.getLocation();
+    private void setBlock(final Block connected, final int i) {
+        final Location location = connected.getLocation();
         location.setY(connected.getLocation().getY() + i);
         location.getBlock().setType(Material.GLASS);
     }
 
-    private void setBlock(Block connected, House house, int i) {
-        Location location = connected.getLocation();
+    private void setBlock(final Block connected, final House house, final int i) {
+        final Location location = connected.getLocation();
         location.setY(connected.getLocation().getY() + i);
         if (!house.getMaterial().isBlock()) {
             throw new IllegalArgumentException("The material provided for the house is only for when using " +
-                    "PointType: BLOCK & the material provided is not a block. Please fix this or swap to " +
-                    "PointType: ITEM_RENAME or ITEM_NBT, and set custom-item under custom-item.material.");
+                "PointType: BLOCK & the material provided is not a block. Please fix this or swap to " +
+                "PointType: ITEM_RENAME or ITEM_NBT, and set custom-item under custom-item.material.");
         }
         location.getBlock().setType(house.getMaterial());
     }
